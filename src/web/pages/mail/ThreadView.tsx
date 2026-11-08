@@ -306,7 +306,7 @@ export function ThreadView({
       </div>
 
       <div className="scroll-thin min-h-0 flex-1 overflow-y-auto">
-        <div className="flex w-full flex-col gap-3 px-3.5 pt-[18px] pb-10 md:px-9 md:pt-7">
+        <div className="mx-auto flex w-full flex-col gap-3 px-3.5 lg:w-[90%] pt-[18px] pb-10 md:px-9 md:pt-7">
           <div className="px-1 pb-2 md:px-0.5">
             <h1 className="text-xl leading-[1.3] font-semibold tracking-[-0.02em] break-words text-pretty md:text-[22px]">{t.subject || '(no subject)'}</h1>
             {(t.labels.length > 0 || t.folder === 'spam' || t.snoozedUntil || (mailbox && mailboxes.length > 1)) && (

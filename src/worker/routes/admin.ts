@@ -440,7 +440,7 @@ admin.post('/storage/bucket', async (c) => {
   const settings = await settingsOf(c);
   const cf = await requireCf(c.env, settings);
   const { bucket } = (await c.req.json()) as { bucket?: string };
-  const name = (bucket || 'openinbox-mail').toLowerCase();
+  const name = (bucket || 'murphyinbox-mail').toLowerCase();
   if (!/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/.test(name)) throw badRequest('Bucket names use 3-63 lowercase letters, digits and dashes.');
   try {
     await cf.request('POST', `/accounts/${settings.cfAccountId}/r2/buckets`, { name });

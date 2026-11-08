@@ -64,7 +64,7 @@ function AdminLayout() {
         </div>
       </aside>
       <div className="scroll-thin min-h-0 flex-1 overflow-y-auto">
-        <div className="w-full px-4 pt-6 pb-12 sm:px-6 lg:px-8 lg:pt-8">
+        <div className="mx-auto w-full px-4 pt-6 pb-12 sm:px-6 lg:w-[90%] lg:px-8 lg:pt-8">
           <Outlet />
         </div>
       </div>

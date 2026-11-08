@@ -638,7 +638,7 @@ interface StorageInfo {
 
 function StorageSection() {
   const storage = useQuery({ queryKey: ['admin', 'storage'], queryFn: () => get<StorageInfo>('/admin/storage') });
-  const [bucket, setBucket] = useState('openinbox-mail');
+  const [bucket, setBucket] = useState('murphyinbox-mail');
   const [keyId, setKeyId] = useState('');
   const [secret, setSecret] = useState('');
   const { run, busy } = useAction();
