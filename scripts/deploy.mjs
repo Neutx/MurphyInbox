@@ -11,6 +11,6 @@ const run = (cmd) => {
 };
 
 // Workers Builds runs `npm run build` first; don't build twice there.
-if (!(process.env.WORKERS_CI && existsSync('dist/openinbox/wrangler.json'))) run('npx vite build');
+if (!(process.env.WORKERS_CI && existsSync('dist/murphyinbox/wrangler.json'))) run('npx vite build');
 
 run('npx wrangler deploy');

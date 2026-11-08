@@ -4,7 +4,7 @@
   // database, then writes its database_id here in your copy of the repo; a plain `wrangler deploy`
   // creates it too. The Worker applies its own migrations, and the deploy form asks for nothing.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "openinbox",
+  "name": "murphyinbox",
   "main": "src/worker/index.ts",
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat"],
@@ -17,7 +17,7 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "openinbox",
+      "database_name": "murphyinbox",
       "migrations_dir": "src/worker/db/migrations"
     }
   ],
