@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appName">MurphyInbox</string>
+    <string name="launchUrl" translatable="false">https://mail.murphylabs.org/mail</string>
+    <string name="hostName" translatable="false">mail.murphylabs.org</string>
+    <!-- The site half of the Digital Asset Links pair (the other half is /.well-known/assetlinks.json). -->
+    <string name="assetStatements" translatable="false">[{\"relation\": [\"delegate_permission/common.handle_all_urls\"], \"target\": {\"namespace\": \"web\", \"site\": \"https://mail.murphylabs.org\"}}]</string>
+</resources>

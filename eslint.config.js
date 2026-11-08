@@ -5,7 +5,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 
 export default defineConfig(
-  { ignores: ['dist/', '.wrangler/', 'node_modules/', 'coverage/', 'test-results/', 'playwright-report/', 'test/fixtures/'] },
+  { ignores: ['dist/', '.wrangler/', 'node_modules/', 'coverage/', 'test-results/', 'playwright-report/', 'test/fixtures/', 'desktop/node_modules/', 'desktop/dist/', 'android/'] },
   js.configs.recommended,
   tseslint.configs.recommended,
   {
@@ -24,11 +24,17 @@ export default defineConfig(
     },
   },
   {
+    // Electron main and (sandboxed) preload scripts are CommonJS.
+    files: ['desktop/**/*.js'],
+    languageOptions: { sourceType: 'commonjs' },
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
+  {
     files: ['src/web/public/sw.js'],
     languageOptions: { globals: globals.serviceworker },
   },
   {
-    files: ['scripts/**', 'test/mock/**', 'test/e2e/**', '*.config.{js,ts}'],
+    files: ['scripts/**', 'desktop/**/*.js', 'test/mock/**', 'test/e2e/**', '*.config.{js,ts}'],
     languageOptions: { globals: globals.node },
   },
 );

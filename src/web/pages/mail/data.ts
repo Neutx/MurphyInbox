@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useInfiniteQuery, useQuery, useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import { get, post } from '../../lib/api';
 import { viewQuery } from '../../lib/mail';
+import { desktop, desktopMailCheck } from '../../lib/desktop';
 import type { Mailbox, ThreadDetail, ThreadSummary } from '../../lib/types';
 
 export function useMailboxes() {
@@ -92,10 +93,16 @@ export function useMailSync() {
         const { states } = await get<{ states: Record<string, number> }>('/sync');
         const prev = last.current;
         last.current = states;
-        if (prev && Object.keys(states).some((k) => states[k] !== prev[k])) {
+        const changed = !!prev && Object.keys(states).some((k) => states[k] !== prev[k]);
+        if (changed) {
           await qc.invalidateQueries({ queryKey: ['mailboxes'] });
           qc.invalidateQueries({ queryKey: ['threads'] });
           qc.invalidateQueries({ queryKey: ['thread'] });
+        }
+        // The desktop app has no Web Push: it notifies from this check instead.
+        if (desktop() && (changed || !prev)) {
+          const boxes = qc.getQueryData<Mailbox[]>(['mailboxes']);
+          if (boxes) await desktopMailCheck(boxes);
         }
       } catch {
         // offline or signed out; the session handler deals with the latter

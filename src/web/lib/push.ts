@@ -1,5 +1,6 @@
 // Service worker registration and Web Push on this device.
 import { get, post } from './api';
+import { desktop, desktopNotifyOn, setDesktopNotify, showDesktopNotification } from './desktop';
 
 export type PushState = 'unsupported' | 'needs-install' | 'denied' | 'off' | 'on';
 
@@ -21,6 +22,7 @@ async function registration(): Promise<ServiceWorkerRegistration | null> {
 }
 
 export async function pushState(): Promise<PushState> {
+  if (desktop()) return Notification.permission === 'denied' ? 'denied' : desktopNotifyOn() ? 'on' : 'off';
   // iPhone and iPad only offer push to apps added to the home screen.
   if (isIos() && !isStandalone()) return 'needs-install';
   if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return 'unsupported';
@@ -39,6 +41,7 @@ function keyBytes(b64url: string): Uint8Array<ArrayBuffer> {
 }
 
 export async function enablePush(): Promise<PushState> {
+  if (desktop()) return (await setDesktopNotify(true)) ? 'on' : pushState();
   if ((await Notification.requestPermission()) !== 'granted') return pushState();
   const reg = (await registration()) ?? (await navigator.serviceWorker.register('/sw.js'));
   await navigator.serviceWorker.ready;
@@ -59,6 +62,10 @@ export async function enablePush(): Promise<PushState> {
 }
 
 export async function disablePush(): Promise<void> {
+  if (desktop()) {
+    await setDesktopNotify(false);
+    return;
+  }
   const sub = await (await registration())?.pushManager.getSubscription();
   if (!sub) return;
   await post('/account/push/unsubscribe', { endpoint: sub.endpoint }).catch(() => undefined);
@@ -66,6 +73,7 @@ export async function disablePush(): Promise<void> {
 }
 
 export async function testPush(): Promise<void> {
+  if (desktop()) return showDesktopNotification('MurphyInbox', 'Notifications work in the desktop app.', '/mail', 'test');
   const sub = await (await registration())?.pushManager.getSubscription();
   if (!sub) throw new Error('Notifications are not on for this device.');
   await post('/account/push/test', { endpoint: sub.endpoint });
@@ -74,6 +82,7 @@ export async function testPush(): Promise<void> {
 // On every start while signed in: re-send this device's subscription so the server copy stays
 // current (one small request; the server upserts).
 export async function refreshPush(): Promise<void> {
+  if (desktop()) return;
   if ((await pushState()) !== 'on') return;
   const sub = await (await registration())?.pushManager.getSubscription();
   if (sub) await post('/account/push/subscriptions', sub.toJSON()).catch(() => undefined);
@@ -81,7 +90,9 @@ export async function refreshPush(): Promise<void> {
 
 // Signing out: stop notifications here and drop the offline copy of this account's mail.
 export async function forgetDevice(): Promise<void> {
-  await disablePush().catch(() => undefined);
+  // The desktop app keeps its notification setting; it belongs to the computer, not the account.
+  if (desktop()) desktop()?.setBadge(0);
+  else await disablePush().catch(() => undefined);
   navigator.serviceWorker?.controller?.postMessage('clear-data');
   await caches?.delete('api-v1').catch(() => undefined);
 }

@@ -1,0 +1,51 @@
+// MurphyInbox for Android: a Trusted Web Activity. The app opens https://mail.murphylabs.org full
+// screen in the phone's Chrome, so Web Push notifications, offline mail and updates all come from
+// the web app. Built in CI (.github/workflows/release.yml); signing comes from environment variables.
+plugins {
+    id 'com.android.application'
+}
+
+def env = System.getenv()
+def keystore = env['ANDROID_KEYSTORE_FILE']
+
+android {
+    namespace 'org.murphylabs.inbox'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'org.murphylabs.inbox'
+        minSdk 21
+        targetSdk 35
+        versionCode((env['VERSION_CODE'] ?: '1') as int)
+        versionName(env['VERSION_NAME'] ?: '1.0.0')
+    }
+
+    signingConfigs {
+        release {
+            if (keystore) {
+                storeFile file(keystore)
+                storePassword env['ANDROID_KEYSTORE_PASSWORD']
+                keyAlias env['ANDROID_KEY_ALIAS']
+                keyPassword env['ANDROID_KEYSTORE_PASSWORD']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            // Without the release key the APK is debug-signed: it installs, but Android shows a
+            // browser bar because assetlinks.json lists only the release key.
+            signingConfig keystore ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
+}

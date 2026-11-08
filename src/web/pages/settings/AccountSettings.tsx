@@ -9,6 +9,7 @@ import { useRefreshSession, useUser } from '../../lib/session';
 import { ACCENTS, useAccent, useTheme } from '../../lib/theme';
 import { cn } from '../../lib/utils';
 import { enablePush, disablePush, pushState, testPush, type PushState } from '../../lib/push';
+import { desktop } from '../../lib/desktop';
 import { Button } from '../../components/ui/button';
 import { Field, Input, PasswordInput, SegmentedControl, Switch } from '../../components/ui/form';
 import { Alert, Badge, Card, CardHeader, CopyButton, PageHeader } from '../../components/ui/misc';
@@ -132,6 +133,12 @@ const PUSH_HINT: Record<PushState, string> = {
   'needs-install': 'On iPhone and iPad: tap Share, then Add to Home Screen, and open MurphyInbox from your home screen to turn notifications on.',
 };
 
+const DESKTOP_HINT: Partial<Record<PushState, string>> = {
+  on: 'New inbox mail shows up as a system notification while MurphyInbox runs, including from the tray.',
+  off: 'Show new inbox mail as system notifications while MurphyInbox runs, including from the tray.',
+  denied: 'Notifications are blocked for MurphyInbox in your system settings.',
+};
+
 function DeviceNotifications() {
   const [state, setState] = useState<PushState | null>(null);
   const { run, busy } = useAction();
@@ -153,7 +160,7 @@ function DeviceNotifications() {
         <div className="flex items-center gap-2 text-sm font-medium">
           <Bell className="h-4 w-4" /> Notifications on this device
         </div>
-        <div className="mt-0.5 text-xs text-muted">{state ? PUSH_HINT[state] : 'Checking this device…'}</div>
+        <div className="mt-0.5 text-xs text-muted">{state ? ((desktop() && DESKTOP_HINT[state]) || PUSH_HINT[state]) : 'Checking this device…'}</div>
         {state === 'on' && (
           <Button size="sm" variant="secondary" className="mt-2" disabled={busy === 'test'} onClick={() => run('test', testPush, 'Test notification sent')}>
             Send a test

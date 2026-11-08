@@ -23,3 +23,9 @@ docs/creds.txt
 # Local-only notes and agent instructions (not published)
 .notes/
 CLAUDE.md
+
+# Native app builds
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties

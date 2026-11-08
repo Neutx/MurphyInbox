@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "org.murphylabs.inbox",
+      "sha256_cert_fingerprints": ["82:CE:73:11:A9:10:63:D6:78:3B:77:CF:4B:EE:AE:CD:4D:0C:25:C7:6A:C8:90:E6:A4:CA:39:0F:3C:CE:71:4C"]
+    }
+  }
+]

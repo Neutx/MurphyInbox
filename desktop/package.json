@@ -1,0 +1,60 @@
+{
+  "name": "murphyinbox-desktop",
+  "productName": "MurphyInbox",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MurphyInbox for Windows and macOS: the web app at mail.murphylabs.org in its own window, with notifications and a tray icon.",
+  "author": "Murphy Labs",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win nsis --x64 --publish never",
+    "dist:mac": "electron-builder --mac dmg --universal --publish never"
+  },
+  "devDependencies": {
+    "electron": "45.2.3",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "org.murphylabs.inbox",
+    "productName": "MurphyInbox",
+    "copyright": "Murphy Labs",
+    "files": [
+      "main.js",
+      "preload.js",
+      "build/tray*.png",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "win": {
+      "icon": "build/icon.png",
+      "artifactName": "MurphyInbox-Setup-${version}-windows-x64.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "MurphyInbox",
+      "deleteAppDataOnUninstall": false
+    },
+    "mac": {
+      "icon": "build/icon.png",
+      "category": "public.app-category.productivity",
+      "artifactName": "MurphyInbox-${version}-macos-universal.${ext}",
+      "hardenedRuntime": true,
+      "notarize": false
+    },
+    "dmg": {
+      "title": "MurphyInbox ${version}"
+    },
+    "electronLanguages": [
+      "en-US"
+    ],
+    "compression": "maximum"
+  }
+}
