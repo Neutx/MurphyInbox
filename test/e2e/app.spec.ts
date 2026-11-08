@@ -56,7 +56,7 @@ test.beforeAll(async () => {
 test('setup, send, receive, reply, search and isolate members', async ({ page, browser }) => {
   // 1. Setup: checks, admin email, domain automation.
   await page.goto('/');
-  await expect(page.getByText('Welcome to OpenInbox')).toBeVisible();
+  await expect(page.getByText('Welcome to MurphyInbox')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled({ timeout: 30_000 });
   await shot(page, 'setup-checks');
   await page.getByRole('button', { name: 'Continue' }).click();

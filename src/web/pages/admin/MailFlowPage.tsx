@@ -170,7 +170,7 @@ function CloudflareLog({ filter }: { filter: string }) {
     <div className="flex flex-col gap-3">
       <div className="flex items-start gap-2 text-[12.5px] text-muted">
         <Cloud className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-        <span className="flex-1 text-pretty">Cloudflare's own log for the last 24 hours, including mail it rejected before OpenInbox saw it. "dropped" is normal: OpenInbox stores the mail instead of forwarding it.</span>
+        <span className="flex-1 text-pretty">Cloudflare's own log for the last 24 hours, including mail it rejected before MurphyInbox saw it. "dropped" is normal: MurphyInbox stores the mail instead of forwarding it.</span>
         <Button size="xs" variant="ghost" icon={<RefreshCw className={cn(log.isFetching && 'animate-spin')} />} onClick={() => log.refetch()}>
           Refresh
         </Button>

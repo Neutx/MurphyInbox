@@ -6,8 +6,8 @@ import { del, get, patch, post, errorText } from '../../lib/api';
 import { timeAgo } from '../../lib/format';
 import { useAction } from '../../lib/hooks';
 import { useRefreshSession, useUser } from '../../lib/session';
-import { useTheme } from '../../lib/theme';
-import { storageGet, storageSet } from '../../lib/utils';
+import { ACCENTS, useAccent, useTheme } from '../../lib/theme';
+import { cn, storageGet, storageSet } from '../../lib/utils';
 import { Button } from '../../components/ui/button';
 import { Field, Input, PasswordInput, SegmentedControl, Switch } from '../../components/ui/form';
 import { Alert, Badge, Card, CardHeader, CopyButton, PageHeader } from '../../components/ui/misc';
@@ -27,7 +27,7 @@ export function ProfileSettings() {
 export function AppearanceSettings() {
   return (
     <div className="space-y-6">
-      <PageHeader title="Appearance" description="Theme and desktop notifications for this browser." />
+      <PageHeader title="Appearance" description="Theme, accent color and desktop notifications for this browser." />
       <Appearance />
     </div>
   );
@@ -79,6 +79,7 @@ function Profile() {
 
 function Appearance() {
   const [theme, setTheme] = useTheme();
+  const [accent, setAccent] = useAccent();
   const [notify, setNotify] = useState(storageGet('oi.notify', false));
   const toggleNotify = async (on: boolean) => {
     if (on && 'Notification' in window && Notification.permission !== 'granted') {
@@ -90,7 +91,7 @@ function Appearance() {
   };
   return (
     <Card>
-      <CardHeader title="Theme and notifications" />
+      <CardHeader title="Theme, color and notifications" />
       <div className="space-y-5 p-5">
         <Field label="Theme">
           <SegmentedControl
@@ -103,12 +104,34 @@ function Appearance() {
             ]}
           />
         </Field>
+        <Field label="Accent color" hint="Used for buttons, selection, links and the app icon. Saved in this browser.">
+          <div className="flex items-center gap-3">
+            <div role="radiogroup" aria-label="Accent color" className="flex items-center gap-2.5">
+              {ACCENTS.map((a) => (
+                <button
+                  key={a.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={accent === a.id}
+                  aria-label={a.label}
+                  title={a.label}
+                  onClick={() => setAccent(a.id)}
+                  className={cn('grid h-6 w-6 place-items-center rounded-full transition-shadow', accent === a.id && 'ring-2 ring-[var(--ring)] ring-offset-2 ring-offset-surface')}
+                  style={{ background: a.swatch }}
+                >
+                  {accent === a.id && <span className="h-2 w-2 rounded-full bg-white" />}
+                </button>
+              ))}
+            </div>
+            <span className="text-sm text-muted">{ACCENTS.find((a) => a.id === accent)?.label}</span>
+          </div>
+        </Field>
         <div className="flex items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-sm font-medium">
               <Bell className="h-4 w-4" /> Desktop notifications
             </div>
-            <div className="text-xs text-muted">Notify about new inbox mail while OpenInbox is open in a background tab (this browser only).</div>
+            <div className="text-xs text-muted">Notify about new inbox mail while MurphyInbox is open in a background tab (this browser only).</div>
           </div>
           <Switch checked={notify} onChange={toggleNotify} label="Desktop notifications" />
         </div>

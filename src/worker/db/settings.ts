@@ -49,7 +49,7 @@ const NUMERIC = new Set<keyof AppSettings>(['setupCompletedAt', 'keyGeneratedAt'
 
 const DEFAULTS: AppSettings = {
   setupCompletedAt: null,
-  instanceName: 'OpenInbox',
+  instanceName: 'MurphyInbox',
   appUrl: null,
   cfAccountId: null,
   cfAccountName: null,

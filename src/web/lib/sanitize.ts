@@ -142,7 +142,7 @@ a{color:#b3aeff}
 blockquote{margin:0 0 0 .6em;padding-left:.8em;border-left:3px solid #33333d;color:#a1a1ad}
 hr{border:0;border-top:1px solid #2c2c36}`
     : `html,body{margin:0;padding:0;background:#fff;color:#1f1f24}
-a{color:#4338ca}
+a{color:#1665c1}
 blockquote{margin:0 0 0 .6em;padding-left:.8em;border-left:3px solid #d6d6de;color:#55555f}`;
   return `<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${csp}"><meta name="referrer" content="no-referrer"><base target="_blank"><style>
 ${colors}

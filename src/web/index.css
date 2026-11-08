@@ -1,69 +1,93 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/geist';
-@import '@fontsource-variable/geist-mono';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Design tokens. Components use these through the Tailwind theme below, so light and dark
-   themes are just two sets of variables. */
+/* MurphyInbox design tokens, after Apple's Human Interface Guidelines (2026, Liquid Glass).
+   Neutrals follow the system grouped-background palette; one accent color, picked in
+   Settings → Appearance, drives every primary shade through color-mix. */
 :root {
-  --bg: #f6f6f8;
+  --bg: #f2f2f7;
   --surface: #ffffff;
-  --surface-2: #f1f1f4;
-  --surface-3: #e8e8ed;
-  --border: #e5e5ea;
-  --border-strong: #d2d2da;
-  --text: #16161d;
-  --text-muted: #5b5b68;
-  --text-faint: #8a8a97;
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --primary-soft: #eef0ff;
-  --primary-fg: #ffffff;
-  /* Primary as text on soft backgrounds (active nav, links). */
-  --primary-text: #4338ca;
-  --danger: #d92d20;
-  --danger-soft: #fdeceb;
-  --success: #137a3f;
-  --success-soft: #e6f5ec;
-  --warning: #b25a06;
-  --warning-soft: #fdf3e2;
-  --ring: rgb(79 70 229 / 0.42);
-  --scrim: rgb(22 22 29 / 0.28);
+  --surface-2: #ececf1;
+  --surface-3: #e3e3e8;
+  --border: rgb(60 60 67 / 0.14);
+  --border-strong: rgb(60 60 67 / 0.24);
+  --text: #1d1d1f;
+  --text-muted: #6e6e73;
+  --text-faint: #8e8e93;
+  --fill: rgb(120 120 128 / 0.16);
+  --fill-strong: rgb(120 120 128 / 0.24);
+  --accent: #1665c1;
+  --danger: #d70015;
+  --danger-soft: #fdeaea;
+  --success: #248a3d;
+  --success-soft: #e7f5ea;
+  --warning: #b25000;
+  --warning-soft: #fdf1e3;
+  --scrim: rgb(0 0 0 / 0.2);
   /* Background behind mail bodies, which are written for white. */
   --reading: #ffffff;
-  --shadow: 0 1px 2px rgb(16 16 24 / 0.05), 0 1px 3px rgb(16 16 24 / 0.06);
-  --shadow-lg: 0 16px 40px -12px rgb(16 16 24 / 0.22), 0 4px 12px -4px rgb(16 16 24 / 0.1), 0 0 0 1px rgb(16 16 24 / 0.04);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 1px 3px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 24px 64px -16px rgb(0 0 0 / 0.24), 0 6px 16px -6px rgb(0 0 0 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.04);
+  /* Liquid Glass: functional layer only (shell, sidebars, toolbars, palette, menus). */
+  --glass-bg: rgb(255 255 255 / 0.72);
+  --glass-border: rgb(255 255 255 / 0.6);
+  --glass-shadow: inset 0 1px 0 rgb(255 255 255 / 0.75), 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 30px rgb(0 0 0 / 0.08);
+  --ease-smooth: cubic-bezier(0.32, 0.72, 0, 1);
   color-scheme: light;
 }
 
 .dark {
-  --bg: #0d0d11;
-  --surface: #15151b;
-  --surface-2: #1c1c24;
-  --surface-3: #25252e;
-  --border: #25252e;
-  --border-strong: #363641;
-  --text: #ededf2;
-  --text-muted: #a1a1ae;
-  --text-faint: #6e6e7c;
-  --primary: #7c74ff;
-  --primary-hover: #918aff;
-  --primary-soft: #221f47;
-  --primary-fg: #ffffff;
-  --primary-text: #b3aeff;
-  --danger: #f87171;
-  --danger-soft: #351719;
-  --success: #4ade80;
-  --success-soft: #10301c;
-  --warning: #fbbf24;
-  --warning-soft: #32260e;
-  --ring: rgb(124 116 255 / 0.5);
-  --scrim: rgb(0 0 0 / 0.55);
-  --reading: #18181f;
+  --bg: #000000;
+  --surface: #1c1c1e;
+  --surface-2: #2c2c2e;
+  --surface-3: #3a3a3c;
+  --border: rgb(84 84 88 / 0.5);
+  --border-strong: rgb(84 84 88 / 0.8);
+  --text: #f5f5f7;
+  --text-muted: #a1a1a6;
+  --text-faint: #8e8e93;
+  --fill: rgb(120 120 128 / 0.32);
+  --fill-strong: rgb(120 120 128 / 0.44);
+  --accent: #3d8ae8;
+  --danger: #ff6961;
+  --danger-soft: #3a1a19;
+  --success: #30d158;
+  --success-soft: #0f2e18;
+  --warning: #ffb340;
+  --warning-soft: #33250c;
+  --scrim: rgb(0 0 0 / 0.5);
+  --reading: #1c1c1e;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 20px 48px -12px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(255 255 255 / 0.06);
+  --shadow-lg: 0 24px 64px -16px rgb(0 0 0 / 0.75), 0 0 0 1px rgb(255 255 255 / 0.07);
+  --glass-bg: rgb(44 44 46 / 0.62);
+  --glass-border: rgb(255 255 255 / 0.12);
+  --glass-shadow: inset 0 1px 0 rgb(255 255 255 / 0.1), 0 10px 30px rgb(0 0 0 / 0.45);
   color-scheme: dark;
+}
+
+/* Accents (Settings → Appearance). Light values keep 4.5:1 with white text. */
+:root[data-accent='teal'] { --accent: #0e7c86; }
+:root[data-accent='green'] { --accent: #1f8a3a; }
+:root[data-accent='orange'] { --accent: #c2570c; }
+:root[data-accent='red'] { --accent: #d12f2f; }
+:root[data-accent='pink'] { --accent: #c2185b; }
+:root[data-accent='graphite'] { --accent: #636366; }
+:root.dark[data-accent='teal'] { --accent: #2bb3bf; }
+:root.dark[data-accent='green'] { --accent: #34c759; }
+:root.dark[data-accent='orange'] { --accent: #ff9230; }
+:root.dark[data-accent='red'] { --accent: #ff5a5f; }
+:root.dark[data-accent='pink'] { --accent: #ff4f8b; }
+:root.dark[data-accent='graphite'] { --accent: #98989d; }
+
+/* Every primary shade comes from the accent. */
+:root {
+  --primary: var(--accent);
+  --primary-hover: color-mix(in oklch, var(--accent) 86%, black);
+  --primary-soft: color-mix(in oklch, var(--accent) 13%, var(--surface));
+  --primary-fg: #ffffff;
+  --primary-text: color-mix(in oklch, var(--accent) 88%, var(--text));
+  --ring: color-mix(in oklch, var(--accent) 50%, transparent);
 }
 
 /* Label colors: one value per color. Chip tint and text are mixed against the theme, so both
@@ -111,8 +135,54 @@
   --color-warning-soft: var(--warning-soft);
   --shadow-card: var(--shadow);
   --shadow-pop: var(--shadow-lg);
-  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-  --font-mono: 'Geist Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  --color-fill: var(--fill);
+  --color-fill-strong: var(--fill-strong);
+  --color-accent: var(--accent);
+}
+
+/* SF Pro type ramp (macOS sizes) with Apple's tracking table. */
+@theme {
+  --text-xs: 11px;
+  --text-xs--line-height: 14px;
+  --text-xs--letter-spacing: 0.006em;
+  --text-sm: 13px;
+  --text-sm--line-height: 18px;
+  --text-sm--letter-spacing: -0.006em;
+  --text-base: 15px;
+  --text-base--line-height: 20px;
+  --text-base--letter-spacing: -0.016em;
+  --text-lg: 17px;
+  --text-lg--line-height: 22px;
+  --text-lg--letter-spacing: -0.026em;
+  --text-xl: 22px;
+  --text-xl--line-height: 28px;
+  --text-xl--letter-spacing: -0.012em;
+  --text-2xl: 26px;
+  --text-2xl--line-height: 32px;
+  --text-2xl--letter-spacing: 0.009em;
+  /* Concentric corners: 18 pt glass panes, 8–10 pt rows and fields inside them. */
+  --radius-md: 7px;
+  --radius-lg: 9px;
+  --radius-xl: 13px;
+  --radius-2xl: 18px;
+}
+
+/* Liquid Glass. Opaque under Reduce Transparency / Increase Contrast. */
+@utility glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(24px) saturate(1.4);
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root, .dark { --glass-bg: var(--surface); }
+  .glass { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@media (prefers-contrast: more) {
+  :root, .dark { --glass-bg: var(--surface); --glass-border: var(--border-strong); }
 }
 
 html,
@@ -125,9 +195,10 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 14px;
-  line-height: 1.5;
-  letter-spacing: -0.003em;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.006em;
+  font-feature-settings: 'kern';
   -webkit-font-smoothing: antialiased;
 }
 
@@ -224,7 +295,7 @@ body {
   }
 }
 .animate-slide-up {
-  animation: slide-up 0.18s ease-out;
+  animation: slide-up 0.32s var(--ease-smooth);
 }
 
 @keyframes fade-in {
@@ -236,7 +307,7 @@ body {
   }
 }
 .animate-fade-in {
-  animation: fade-in 0.15s ease-out;
+  animation: fade-in 0.2s var(--ease-smooth);
 }
 
 @keyframes pop-in {
@@ -250,7 +321,7 @@ body {
   }
 }
 .animate-pop-in {
-  animation: pop-in 0.15s ease-out;
+  animation: pop-in 0.3s var(--ease-smooth);
 }
 
 @keyframes countdown {
@@ -269,4 +340,18 @@ body {
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 14px;
+}
+
+/* Reduce Motion: every transition becomes a short cross-fade; no movement or scaling. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-up,
+  .animate-pop-in {
+    animation: fade-in 0.2s ease-out;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -106,9 +106,9 @@ export function MailSidebar({
         key={`${mailbox}-${v}`}
         to={`/mail/${mailbox}/${v}`}
         onClick={onNavigate}
-        className={cn(row, active ? 'bg-primary-soft font-semibold text-primary-text' : strong ? 'font-semibold text-fg hover:bg-surface-2' : 'text-muted hover:bg-surface-2 hover:text-fg')}
+        className={cn(row, active ? 'bg-fill font-semibold text-fg' : strong ? 'font-semibold text-fg hover:bg-fill' : 'text-fg hover:bg-fill')}
       >
-        <Icon className={cn('h-[18px] w-[18px] shrink-0 md:h-[15px] md:w-[15px]', active ? 'text-primary-text' : 'text-faint')} />
+        <Icon className={cn('h-[18px] w-[18px] shrink-0 md:h-[15px] md:w-[15px]', 'text-primary-text')} />
         <span className="truncate">{label}</span>
         <Count n={opts.count} strong={opts.strong} active={active} />
       </NavLink>
@@ -133,7 +133,7 @@ export function MailSidebar({
               key={l.id}
               to={`/mail/${base}/label-${l.id}`}
               onClick={onNavigate}
-              className={cn(row, current === base && view === `label-${l.id}` ? 'bg-primary-soft font-semibold text-primary-text' : 'text-muted hover:bg-surface-2 hover:text-fg')}
+              className={cn(row, current === base && view === `label-${l.id}` ? 'bg-fill font-semibold text-fg' : 'text-fg hover:bg-fill')}
             >
               <span className="grid w-[18px] shrink-0 place-items-center md:w-[15px]">
                 <span className="h-2 w-2 rounded-full" style={labelDot(l.color)} />
@@ -151,7 +151,7 @@ export function MailSidebar({
       {onClose && (
         <div className="flex items-center gap-2.5 px-4 pt-3 pb-2 md:hidden">
           <LogoMark size={24} />
-          <span className="flex-1 truncate text-[15px] font-semibold">{session?.instanceName ?? 'OpenInbox'}</span>
+          <span className="flex-1 truncate text-[15px] font-semibold">{session?.instanceName ?? 'MurphyInbox'}</span>
           <button type="button" onClick={onClose} className="grid h-9 w-9 place-items-center rounded-lg text-muted hover:bg-surface-2" aria-label="Close menu">
             <X className="h-[18px] w-[18px]" />
           </button>

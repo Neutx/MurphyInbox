@@ -30,7 +30,7 @@ function AdminLayout() {
   const problems = o ? o.problems.unparsed + o.problems.failed + o.problems.domainErrors + o.problems.providerErrors : 0;
   return (
     <div className="flex h-full min-h-0 flex-col md:flex-row">
-      <aside className="flex shrink-0 flex-col border-b border-border md:w-[232px] md:border-r md:border-b-0">
+      <aside className="flex shrink-0 flex-col border-b border-border md:my-2 md:ml-2 md:w-[236px] md:rounded-2xl md:glass">
         <nav className="scroll-thin flex gap-px overflow-x-auto p-2 md:flex-col md:px-2.5 md:py-3.5">
           <div className="hidden h-[26px] items-center px-2.5 text-[11.5px] font-medium text-faint md:flex">Admin</div>
           {items.map(({ to, label, Icon, end }) => (
@@ -41,7 +41,7 @@ function AdminLayout() {
               className={({ isActive }) =>
                 cn(
                   'flex h-8 shrink-0 items-center gap-2.5 rounded-[7px] px-2.5 text-[13px] transition-colors',
-                  isActive ? 'bg-primary-soft font-semibold text-primary-text [&>svg]:text-primary-text' : 'text-muted hover:bg-surface-2 hover:text-fg [&>svg]:text-faint',
+                  isActive ? 'bg-fill font-semibold text-fg [&>svg]:text-primary-text' : 'text-fg hover:bg-fill [&>svg]:text-primary-text',
                 )
               }
             >
@@ -51,7 +51,7 @@ function AdminLayout() {
             </NavLink>
           ))}
         </nav>
-        <div className="mx-2.5 mt-auto mb-3.5 hidden flex-col gap-0.5 rounded-[10px] border border-border bg-surface p-2.5 text-xs text-muted md:flex">
+        <div className="mx-2.5 mt-auto mb-3.5 hidden flex-col gap-0.5 rounded-[10px] bg-fill p-2.5 text-xs text-muted md:flex">
           {o && (
             <span className="flex items-center gap-1.5 font-medium text-fg">
               <span className={cn('h-[7px] w-[7px] rounded-full', problems ? 'bg-warning' : 'bg-success')} />
@@ -59,7 +59,7 @@ function AdminLayout() {
             </span>
           )}
           <span className="truncate">
-            OpenInbox {session?.version} · {location.host}
+            MurphyInbox {session?.version} · {location.host}
           </span>
         </div>
       </aside>

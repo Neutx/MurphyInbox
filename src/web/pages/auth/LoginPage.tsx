@@ -34,7 +34,7 @@ export function LoginPage() {
   };
 
   return (
-    <AuthLayout title={`Sign in to ${session?.instanceName ?? 'OpenInbox'}`} footer={<Link to="/recover" className="hover:text-fg">Owner locked out?</Link>}>
+    <AuthLayout title={`Sign in to ${session?.instanceName ?? 'MurphyInbox'}`} footer={<Link to="/recover" className="hover:text-fg">Owner locked out?</Link>}>
       <form onSubmit={submit} className="space-y-4">
         {error && <Alert tone="danger">{error}</Alert>}
         <Field label="Email" id="email">

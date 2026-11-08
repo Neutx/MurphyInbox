@@ -79,7 +79,7 @@ export function SetupPage() {
       <div className="mx-auto max-w-2xl px-4 py-10 sm:py-14">
         <div className="mb-8 flex flex-col items-center text-center">
           <LogoMark size={48} />
-          <h1 className="mt-4 text-2xl font-semibold tracking-tight">Welcome to OpenInbox</h1>
+          <h1 className="mt-4 text-2xl font-semibold tracking-tight">Welcome to MurphyInbox</h1>
           <p className="mt-1.5 max-w-md text-sm text-muted">Your own email on your own domains, running in your Cloudflare account. Setup takes about two minutes.</p>
         </div>
         <ol className="mb-6 flex items-center justify-center gap-2 text-[13px]">
@@ -314,7 +314,7 @@ function ChecksStage({
       ? 'No problems so far. Domain permissions are checked once a domain is in the account.'
       : missingOptional.length
         ? `${missingOptional.length} optional permission${missingOptional.length === 1 ? '' : 's'} missing; some extras will be unavailable.`
-        : 'The token has every permission OpenInbox uses.';
+        : 'The token has every permission MurphyInbox uses.';
 
   return (
     <div className="space-y-4">
@@ -336,10 +336,10 @@ function ChecksStage({
                     : activating
                       ? 'Token connected.'
                       : cfState === 'locked'
-                        ? 'An API token lets OpenInbox set up Email Routing and DNS for your domains.'
+                        ? 'An API token lets MurphyInbox set up Email Routing and DNS for your domains.'
                         : c.cloudflare.ok || c.cloudflare.source
                           ? c.cloudflare.message
-                          : 'Create an API token in Cloudflare and paste it here. OpenInbox uses it to set up Email Routing and DNS for you, and it proves this deployment is yours.'
+                          : 'Create an API token in Cloudflare and paste it here. MurphyInbox uses it to set up Email Routing and DNS for you, and it proves this deployment is yours.'
             }
           >
             {(cfState === 'active' || cfState === 'error' || connecting === 'token') && (
@@ -424,7 +424,7 @@ function ChecksStage({
                   ? 'Looking things up in your Cloudflare account…'
                   : findState === 'error'
                     ? 'Fix the problem below, then check again.'
-                    : 'Everything OpenInbox needs is in place.'
+                    : 'Everything MurphyInbox needs is in place.'
             }
           >
             {findState === 'working' && <PendingLines items={['Finding this Worker', 'Listing the domains in your account', 'Checking what the token is allowed to do']} />}
@@ -546,7 +546,7 @@ function RecoveryKey({ value }: { value: string }) {
             className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs text-muted hover:bg-surface-2 hover:text-fg"
             onClick={() =>
               downloadBlob(
-                new Blob([`OpenInbox recovery key (ENCRYPTION_KEY) for ${location.host}\n\n${value}\n`], { type: 'text/plain' }),
+                new Blob([`MurphyInbox recovery key (ENCRYPTION_KEY) for ${location.host}\n\n${value}\n`], { type: 'text/plain' }),
                 'openinbox-recovery-key.txt',
               )
             }
@@ -704,7 +704,7 @@ function AdminStage({
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (password !== confirm) return setError('The passwords do not match.');
-    if (needsConfirm && !replaceMx) return setError(`Confirm that OpenInbox should take over mail for ${zone?.name}.`);
+    if (needsConfirm && !replaceMx) return setError(`Confirm that MurphyInbox should take over mail for ${zone?.name}.`);
     setBusy(true);
     setError('');
     try {
@@ -739,19 +739,19 @@ function AdminStage({
             <LoaderCircle className="h-4 w-4 animate-spin" /> Checking where mail for {zone?.name} goes now…
           </div>
         )}
-        {mx && mx.mxState === 'none' && <Alert tone="success">{mx.name} does not receive mail yet. OpenInbox will set it up.</Alert>}
-        {mx && mx.mxState === 'cloudflare' && <Alert tone="success">{mx.name} already uses Cloudflare Email Routing. OpenInbox will route its mail.</Alert>}
+        {mx && mx.mxState === 'none' && <Alert tone="success">{mx.name} does not receive mail yet. MurphyInbox will set it up.</Alert>}
+        {mx && mx.mxState === 'cloudflare' && <Alert tone="success">{mx.name} already uses Cloudflare Email Routing. MurphyInbox will route its mail.</Alert>}
         {mx && mx.mxState === 'other' && (
           <Alert tone="warning" title={`${mx.name} receives mail somewhere else`}>
-            <div>Its MX records point to {mx.mx.map((m) => m.host).join(', ')}. Continuing replaces them, so all mail for {mx.name} goes to OpenInbox instead.</div>
+            <div>Its MX records point to {mx.mx.map((m) => m.host).join(', ')}. Continuing replaces them, so all mail for {mx.name} goes to MurphyInbox instead.</div>
             <div className="mt-2">
-              <Checkbox checked={replaceMx} onChange={setReplaceMx} label={`Yes, move mail for ${mx.name} to OpenInbox`} />
+              <Checkbox checked={replaceMx} onChange={setReplaceMx} label={`Yes, move mail for ${mx.name} to MurphyInbox`} />
             </div>
           </Alert>
         )}
         {mx && mx.conflicts.length > 0 && (
           <Alert tone="neutral" title="Existing routing rules">
-            {mx.conflicts.map((c) => c.address).join(', ')} {mx.conflicts.length === 1 ? 'has its own rule' : 'have their own rules'} in Email Routing and will keep bypassing OpenInbox. You can disable them later from the domain page.
+            {mx.conflicts.map((c) => c.address).join(', ')} {mx.conflicts.length === 1 ? 'has its own rule' : 'have their own rules'} in Email Routing and will keep bypassing MurphyInbox. You can disable them later from the domain page.
           </Alert>
         )}
         {inspection.error ? <Alert tone="danger">{errorText(inspection.error)}</Alert> : null}
@@ -847,7 +847,7 @@ function DomainStage({ claim, onDone }: { claim: { domainId: number; address: st
     ? steps
     : [
         { id: 'routing', label: 'Turn on Email Routing', status: 'pending' },
-        { id: 'catchall', label: 'Route all mail for the domain to OpenInbox', status: 'pending' },
+        { id: 'catchall', label: 'Route all mail for the domain to MurphyInbox', status: 'pending' },
         { id: 'dmarc', label: 'Add a DMARC record', status: 'pending' },
         { id: 'verify', label: 'Check that mail can arrive', status: 'pending' },
       ];
@@ -912,7 +912,7 @@ function DoneStage({ address }: { address: string }) {
       </div>
       <h2 className="mt-4 text-lg font-semibold">You're all set</h2>
       <p className="mx-auto mt-1.5 max-w-md text-sm text-muted">
-        Mail sent to <span className="font-medium text-fg">{address}</span> now arrives in OpenInbox. Next, connect a sending provider (Resend, Brevo, Mailjet or SMTP) so you can send and reply.
+        Mail sent to <span className="font-medium text-fg">{address}</span> now arrives in MurphyInbox. Next, connect a sending provider (Resend, Brevo, Mailjet or SMTP) so you can send and reply.
       </p>
       <div className="mt-6 flex justify-center gap-2">
         <Button variant="primary" size="lg" icon={<Mail className="h-4 w-4" />} onClick={go}>

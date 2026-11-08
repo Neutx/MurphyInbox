@@ -22,7 +22,7 @@ export function App() {
   if (!session) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
-        <p className="text-sm text-muted">OpenInbox could not reach its API: {errorText(error)}</p>
+        <p className="text-sm text-muted">MurphyInbox could not reach its API: {errorText(error)}</p>
         <Button onClick={() => refetch()}>Try again</Button>
       </div>
     );

@@ -57,7 +57,7 @@ export function Dialog({
   return createPortal(
     <div className="fixed inset-0 z-50 overflow-y-auto bg-scrim animate-fade-in">
       <div className="flex min-h-full items-center justify-center p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-        <div ref={panel} tabIndex={-1} role="dialog" aria-modal="true" className={cn('w-full overflow-hidden rounded-[14px] border border-border bg-surface shadow-pop outline-none animate-pop-in', width)}>
+        <div ref={panel} tabIndex={-1} role="dialog" aria-modal="true" className={cn('w-full overflow-hidden rounded-[22px] bg-surface shadow-pop outline-none animate-pop-in', width)}>
           <div className={cn('flex items-start gap-4', icon ? 'px-[22px] pt-[22px]' : 'pt-5 pr-4 pl-[22px]')}>
             <div className="min-w-0 flex-1">
               {icon && (
@@ -154,7 +154,7 @@ export function Menu({ trigger, children, align = 'end', className }: { trigger:
       {open && (
         <div
           className={cn(
-            'absolute z-40 mt-1 min-w-[220px] rounded-[10px] border border-border bg-surface p-[5px] shadow-pop animate-fade-in',
+            'glass absolute z-40 mt-1 min-w-[220px] rounded-[14px] p-[5px] animate-fade-in',
             align === 'end' ? 'right-0' : 'left-0',
             className,
           )}
@@ -240,7 +240,7 @@ function ToastItem({ toast: t, dismiss }: { toast: Toast; dismiss: (id: number) 
     <div
       role="status"
       className={cn(
-        'pointer-events-auto relative flex min-h-11 items-center gap-3 overflow-hidden rounded-[10px] border bg-surface py-2 pr-2 pl-3.5 text-[13px] text-fg shadow-pop animate-slide-up',
+        'glass pointer-events-auto relative flex min-h-11 items-center gap-3 overflow-hidden rounded-full py-2 pr-2 pl-4 text-[13px] text-fg animate-slide-up',
         t.tone === 'error' ? 'border-danger/35' : 'border-border',
       )}
     >

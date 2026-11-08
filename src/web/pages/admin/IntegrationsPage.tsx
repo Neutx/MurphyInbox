@@ -29,7 +29,7 @@ export function IntegrationsPage() {
   );
 }
 
-const PROVIDER_ACCENT: Record<ProviderType, string> = { resend: '#111111', brevo: '#0b996e', mailjet: '#fea500', cloudflare: '#f6821f', smtp: '#6366f1' };
+const PROVIDER_ACCENT: Record<ProviderType, string> = { resend: '#111111', brevo: '#0b996e', mailjet: '#fea500', cloudflare: '#f6821f', smtp: '#636366' };
 
 function ProviderMark({ type, size = 38 }: { type: ProviderType; size?: number }) {
   const letter = { resend: 'R', brevo: 'B', mailjet: 'M', cloudflare: 'C', smtp: '@' }[type];
@@ -292,7 +292,7 @@ function ProviderCard({ provider: p, onChanged }: { provider: ProviderInfo; onCh
           )
         }
       >
-        OpenInbox stops sending through it. DNS records stay in place. Domains set to send through it must be switched first.
+        MurphyInbox stops sending through it. DNS records stay in place. Domains set to send through it must be switched first.
       </ConfirmDialog>
     </Card>
   );
@@ -316,8 +316,8 @@ function credentialFields(type: ProviderType) {
 }
 
 const KEY_HELP: Record<ProviderType, { href: string; text: string }> = {
-  cloudflare: { href: 'https://developers.cloudflare.com/email-service/', text: 'Sends with the Cloudflare API token OpenInbox already uses, so there is no key to paste. Cloudflare requires a Workers Paid plan, and each sending domain has to be onboarded in the dashboard first.' },
-  resend: { href: 'https://resend.com/api-keys', text: 'Create a key with Full access in Resend → API Keys (full access lets OpenInbox verify domains for you).' },
+  cloudflare: { href: 'https://developers.cloudflare.com/email-service/', text: 'Sends with the Cloudflare API token MurphyInbox already uses, so there is no key to paste. Cloudflare requires a Workers Paid plan, and each sending domain has to be onboarded in the dashboard first.' },
+  resend: { href: 'https://resend.com/api-keys', text: 'Create a key with Full access in Resend → API Keys (full access lets MurphyInbox verify domains for you).' },
   brevo: { href: 'https://app.brevo.com/settings/keys/api', text: 'Create an API key in Brevo → SMTP & API → API Keys.' },
   mailjet: { href: 'https://app.mailjet.com/account/apikeys', text: 'Find your API key and secret key in Mailjet → Account settings → API Key Management.' },
   smtp: { href: '', text: 'Use port 587 (STARTTLS) or 465 (TLS). Port 25 is blocked on Cloudflare Workers.' },
@@ -442,7 +442,7 @@ function ConnectDialog({ type, onClose, onConnected }: { type: ProviderType; onC
             </Field>
             <p className="-mt-1.5 text-xs text-muted sm:col-span-2">Leave empty for no cap.</p>
           </div>
-          {info.hasDomainApi && <p className="text-xs text-muted text-pretty">After connecting, OpenInbox registers each of your domains with {info.label} and writes the DNS records it asks for.</p>}
+          {info.hasDomainApi && <p className="text-xs text-muted text-pretty">After connecting, MurphyInbox registers each of your domains with {info.label} and writes the DNS records it asks for.</p>}
         </form>
       )}
     </Dialog>
@@ -548,7 +548,7 @@ function CloudflareSection() {
   const [replacing, setReplacing] = useState(false);
   const { run, busy } = useAction();
   const data = cf.data;
-  const source = data?.source === 'secret' ? 'token from the CF_API_TOKEN secret' : data?.source === 'stored' ? 'token pasted in OpenInbox' : 'no token';
+  const source = data?.source === 'secret' ? 'token from the CF_API_TOKEN secret' : data?.source === 'stored' ? 'token pasted in MurphyInbox' : 'no token';
   return (
     <Card>
       <CardHeader

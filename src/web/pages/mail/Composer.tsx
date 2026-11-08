@@ -471,7 +471,7 @@ export function Composer({
         open={scheduleOpen}
         onClose={() => setScheduleOpen(false)}
         title="Send later"
-        description="Sent within a minute of the chosen time, even with OpenInbox closed."
+        description="Sent within a minute of the chosen time, even with MurphyInbox closed."
         confirmLabel="Schedule send"
         onPick={(at) => send(at)}
       />

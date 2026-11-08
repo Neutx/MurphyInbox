@@ -30,7 +30,7 @@ export default function SettingsPage() {
       className={({ isActive }) =>
         cn(
           'flex h-8 shrink-0 items-center gap-2.5 rounded-[7px] px-2.5 text-[13px] whitespace-nowrap transition-colors',
-          isActive ? 'bg-primary-soft font-semibold text-primary-text [&>svg]:text-primary-text' : 'text-muted hover:bg-surface-2 hover:text-fg [&>svg]:text-faint',
+          isActive ? 'bg-fill font-semibold text-fg [&>svg]:text-primary-text' : 'text-fg hover:bg-fill [&>svg]:text-primary-text',
         )
       }
     >
@@ -41,7 +41,7 @@ export default function SettingsPage() {
   const heading = (label: string, first?: boolean) => <div className={cn('hidden h-[26px] items-center px-2.5 text-[11.5px] font-medium text-faint md:flex', !first && 'md:mt-3')}>{label}</div>;
   return (
     <div className="flex h-full min-h-0 flex-col md:flex-row">
-      <aside className="shrink-0 border-b border-border md:w-[232px] md:border-r md:border-b-0">
+      <aside className="shrink-0 border-b border-border md:my-2 md:ml-2 md:w-[236px] md:rounded-2xl md:glass">
         <nav className="scroll-thin flex gap-px overflow-x-auto p-2 md:flex-col md:px-2.5 md:py-3.5">
           {heading('Account', true)}
           {ACCOUNT.map((a) => link(a.to, a.label, a.Icon))}

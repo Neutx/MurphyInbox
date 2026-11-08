@@ -129,7 +129,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
   let lastGroup = '';
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-scrim p-4 pt-[12vh] animate-fade-in" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="w-full max-w-[620px] overflow-hidden rounded-[14px] border border-border bg-surface shadow-pop animate-pop-in">
+      <div className="glass w-full max-w-[640px] overflow-hidden rounded-[22px] animate-pop-in">
         <div className="flex h-[54px] items-center gap-3 border-b border-border px-[18px]">
           <Search className="h-[17px] w-[17px] text-faint" />
           <input

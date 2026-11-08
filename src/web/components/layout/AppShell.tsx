@@ -61,8 +61,8 @@ export function AppShell() {
       to={to}
       className={({ isActive }) =>
         cn(
-          'flex h-7 items-center gap-[7px] rounded-[7px] px-2.5 text-[13px] font-medium transition-colors [&>svg]:h-[15px] [&>svg]:w-[15px]',
-          isActive ? 'bg-surface-2 text-fg [&>svg]:text-muted' : 'text-muted hover:text-fg',
+          'flex h-7 items-center gap-[7px] rounded-full px-3 text-[13px] font-medium transition-colors [&>svg]:h-[15px] [&>svg]:w-[15px]',
+          isActive ? 'bg-fill text-fg [&>svg]:text-primary-text' : 'text-muted hover:text-fg',
         )
       }
     >
@@ -79,12 +79,12 @@ export function AppShell() {
 
   return (
     <div className="flex h-full flex-col">
-      <header className="flex h-12 shrink-0 items-center gap-3 border-b border-border bg-bg pr-3 pl-3.5 sm:gap-5">
+      <header className="flex h-[52px] shrink-0 items-center gap-3 bg-bg pr-3 pl-3.5 sm:gap-5">
         <NavLink to="/" className="flex items-center gap-[9px] md:w-[230px]">
           <LogoMark size={22} />
-          <span className="hidden truncate text-sm font-semibold tracking-[-0.01em] md:inline">{session?.instanceName ?? 'OpenInbox'}</span>
+          <span className="hidden truncate text-sm font-semibold tracking-[-0.01em] md:inline">{session?.instanceName ?? 'MurphyInbox'}</span>
         </NavLink>
-        <nav className="flex items-center gap-0.5">
+        <nav className="glass flex items-center gap-0.5 rounded-full p-[3px]">
           {nav('/mail', 'Mail', Inbox)}
           {isAdmin && nav('/admin', 'Admin', LayoutGrid)}
         </nav>
@@ -92,7 +92,7 @@ export function AppShell() {
         <button
           type="button"
           onClick={() => setPalette(true)}
-          className="hidden h-[30px] w-60 items-center gap-2 rounded-lg border border-border bg-surface pr-1.5 pl-2.5 text-[12.5px] text-faint transition-colors hover:border-border-strong hover:text-muted sm:flex"
+          className="glass hidden h-[34px] w-60 items-center gap-2 rounded-full pr-2 pl-3 text-[13px] text-faint transition-colors hover:text-muted sm:flex"
         >
           <Command className="h-3.5 w-3.5" />
           <span className="flex-1 text-left">Jump to…</span>
@@ -134,7 +134,7 @@ export function AppShell() {
           <MenuItem icon={<LogOut />} onClick={signOut}>
             Sign out
           </MenuItem>
-          <div className="px-2 pt-1.5 pb-1 text-[11px] text-faint">OpenInbox {session?.version}</div>
+          <div className="px-2 pt-1.5 pb-1 text-[11px] text-faint">MurphyInbox {session?.version}</div>
         </Menu>
       </header>
       <main className="min-h-0 flex-1">

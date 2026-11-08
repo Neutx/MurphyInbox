@@ -1,6 +1,6 @@
 // Values shared by the Worker and the web app.
 
-export const APP_NAME = 'OpenInbox';
+export const APP_NAME = 'MurphyInbox';
 
 // The upstream repository, used for the in-app "update available" notice. Forks and Deploy
 // button copies keep pointing here so they hear about new releases.

@@ -325,9 +325,9 @@ function MailApp() {
   // The browser tab shows the unread count.
   useEffect(() => {
     const unread = (mailboxes ?? []).reduce((n, m) => n + (m.unread.inbox ?? 0), 0);
-    document.title = unread ? `(${unread}) Inbox · OpenInbox` : 'OpenInbox';
+    document.title = unread ? `(${unread}) Inbox · MurphyInbox` : 'MurphyInbox';
     return () => {
-      document.title = 'OpenInbox';
+      document.title = 'MurphyInbox';
     };
   }, [mailboxes]);
 
@@ -350,13 +350,13 @@ function MailApp() {
       <div className={cn('fixed inset-0 z-30 bg-scrim md:hidden', drawer ? 'block animate-fade-in' : 'hidden')} onClick={() => setDrawer(false)} />
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 w-[304px] bg-bg shadow-pop transition-transform md:static md:z-auto md:w-64 md:translate-x-0 md:border-r md:border-border md:shadow-none',
+          'fixed inset-y-0 left-0 z-40 w-[304px] transition-transform max-md:bg-bg max-md:shadow-pop md:static md:z-auto md:my-2 md:ml-2 md:w-[248px] md:translate-x-0 md:overflow-hidden md:rounded-2xl md:glass',
           drawer ? 'translate-x-0' : '-translate-x-full',
         )}
       >
         <MailSidebar mailboxes={mailboxes} current={mailboxParam} view={view} onCompose={() => { setDrawer(false); openCompose(); }} onNavigate={() => setDrawer(false)} onClose={() => setDrawer(false)} />
       </aside>
-      <section className={cn('relative min-h-0 w-full flex-col border-border md:flex md:w-[380px] md:shrink-0 md:border-r lg:w-[400px]', threadId ? 'hidden' : 'flex')}>
+      <section className={cn('relative min-h-0 w-full flex-col border-border bg-surface md:ml-2 md:flex md:w-[380px] md:rounded-tl-2xl md:shrink-0 md:border-r lg:w-[400px]', threadId ? 'hidden' : 'flex')}>
         <ThreadList
           mailbox={mailboxParam}
           view={view}
@@ -374,7 +374,7 @@ function MailApp() {
           searchRef={searchRef}
         />
       </section>
-      <section className={cn('min-h-0 min-w-0 flex-1', threadId ? 'block' : 'hidden md:block')}>
+      <section className={cn('min-h-0 min-w-0 flex-1 bg-surface', threadId ? 'block' : 'hidden md:block')}>
         {threadId ? (
           <ThreadView
             key={threadId}

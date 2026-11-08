@@ -263,7 +263,7 @@ function DomainCard({ domain: d, mailboxes, providers, onChanged }: { domain: Do
             </div>
           )}
         </Field>
-        <Field label="Addresses that bypass OpenInbox" hint="Mail to these keeps going to its existing Email Routing rule.">
+        <Field label="Addresses that bypass MurphyInbox" hint="Mail to these keeps going to its existing Email Routing rule.">
           {health?.conflicts?.length ? (
             <div className="flex min-h-9 flex-wrap items-center gap-1.5 rounded-lg border border-border px-2 py-[5px]">
               {health.conflicts.map((c) => (
@@ -271,8 +271,8 @@ function DomainCard({ domain: d, mailboxes, providers, onChanged }: { domain: Do
                   {c.address}
                   <button
                     type="button"
-                    aria-label={`Send ${c.address} to OpenInbox`}
-                    title="Disable this rule so mail comes to OpenInbox"
+                    aria-label={`Send ${c.address} to MurphyInbox`}
+                    title="Disable this rule so mail comes to MurphyInbox"
                     className="grid h-4 w-4 place-items-center rounded text-faint hover:text-fg"
                     onClick={() => run('rule', () => post(`/admin/domains/${d.id}/disable-rule`, { address: c.address }).then(() => post(`/admin/domains/${d.id}/check`)).then(onChanged), 'Rule disabled')}
                   >
@@ -316,7 +316,7 @@ function DomainCard({ domain: d, mailboxes, providers, onChanged }: { domain: Do
           )
         }
       >
-        OpenInbox turns off its catch-all rule for this domain. Email Routing and DNS records stay as they are.
+        MurphyInbox turns off its catch-all rule for this domain. Email Routing and DNS records stay as they are.
       </ConfirmDialog>
     </Card>
   );
@@ -349,7 +349,7 @@ function AppDomainDialog({ domain, onClose, onDone }: { domain: DomainInfo; onCl
     >
       {result ? (
         <Alert tone="success" title="Attached">
-          OpenInbox will answer at{' '}
+          MurphyInbox will answer at{' '}
           <a href={result} className="font-medium underline" target="_blank" rel="noreferrer">
             {result}
           </a>{' '}
@@ -418,7 +418,7 @@ function AddDomainDialog({ onClose, onAdded }: { onClose: () => void; onAdded: (
         open
         onClose={onAdded}
         title={done ? `${zone?.name ?? 'The domain'} is ready` : `Setting up ${zone?.name ?? 'the domain'}`}
-        description={done ? 'Mail for this domain now arrives in OpenInbox. Create inboxes for it on the Inboxes page.' : 'Keep this open. It takes about 30 seconds.'}
+        description={done ? 'Mail for this domain now arrives in MurphyInbox. Create inboxes for it on the Inboxes page.' : 'Keep this open. It takes about 30 seconds.'}
         footer={
           <Button variant="primary" onClick={onAdded} disabled={busy}>
             {done ? 'Done' : 'Close'}
@@ -448,7 +448,7 @@ function AddDomainDialog({ onClose, onAdded }: { onClose: () => void; onAdded: (
       open
       onClose={onClose}
       title="Add a domain"
-      description="Pick one of the zones on your Cloudflare account. OpenInbox turns on Email Routing, routes its mail here and adds DMARC if it's missing."
+      description="Pick one of the zones on your Cloudflare account. MurphyInbox turns on Email Routing, routes its mail here and adds DMARC if it's missing."
       footer={
         available.length ? (
           <>
@@ -513,10 +513,10 @@ function AddDomainDialog({ onClose, onAdded }: { onClose: () => void; onAdded: (
                   </div>
                 ))}
               </div>
-              <Checkbox checked={replaceMx} onChange={setReplaceMx} label="Replace them and move this domain's mail to OpenInbox" />
+              <Checkbox checked={replaceMx} onChange={setReplaceMx} label="Replace them and move this domain's mail to MurphyInbox" />
             </div>
           )}
-          {!!mx?.conflicts.length && <Alert tone="neutral">{mx.conflicts.map((c) => c.address).join(', ')} have their own routing rules and will bypass OpenInbox until disabled.</Alert>}
+          {!!mx?.conflicts.length && <Alert tone="neutral">{mx.conflicts.map((c) => c.address).join(', ')} have their own routing rules and will bypass MurphyInbox until disabled.</Alert>}
           <p className="mt-1 text-xs text-faint">You can re-run or repair setup from this page at any time.</p>
         </div>
       )}

@@ -255,7 +255,7 @@ function Maintenance() {
           <Button size="sm" onClick={() => setConfirm(true)} icon={<Key className="h-3.5 w-3.5" />}>
             Re-encrypt now
           </Button>
-          <span className="text-xs text-faint">OpenInbox {settings.data?.version}</span>
+          <span className="text-xs text-faint">MurphyInbox {settings.data?.version}</span>
         </div>
       </div>
       <ConfirmDialog
