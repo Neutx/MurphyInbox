@@ -7,7 +7,8 @@ import { timeAgo } from '../../lib/format';
 import { useAction } from '../../lib/hooks';
 import { useRefreshSession, useUser } from '../../lib/session';
 import { ACCENTS, useAccent, useTheme } from '../../lib/theme';
-import { cn, storageGet, storageSet } from '../../lib/utils';
+import { cn } from '../../lib/utils';
+import { enablePush, disablePush, pushState, testPush, type PushState } from '../../lib/push';
 import { Button } from '../../components/ui/button';
 import { Field, Input, PasswordInput, SegmentedControl, Switch } from '../../components/ui/form';
 import { Alert, Badge, Card, CardHeader, CopyButton, PageHeader } from '../../components/ui/misc';
@@ -80,15 +81,6 @@ function Profile() {
 function Appearance() {
   const [theme, setTheme] = useTheme();
   const [accent, setAccent] = useAccent();
-  const [notify, setNotify] = useState(storageGet('oi.notify', false));
-  const toggleNotify = async (on: boolean) => {
-    if (on && 'Notification' in window && Notification.permission !== 'granted') {
-      const p = await Notification.requestPermission();
-      if (p !== 'granted') return;
-    }
-    setNotify(on);
-    storageSet('oi.notify', on);
-  };
   return (
     <Card>
       <CardHeader title="Theme, color and notifications" />
@@ -126,17 +118,50 @@ function Appearance() {
             <span className="text-sm text-muted">{ACCENTS.find((a) => a.id === accent)?.label}</span>
           </div>
         </Field>
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-sm font-medium">
-              <Bell className="h-4 w-4" /> Desktop notifications
-            </div>
-            <div className="text-xs text-muted">Notify about new inbox mail while MurphyInbox is open in a background tab (this browser only).</div>
-          </div>
-          <Switch checked={notify} onChange={toggleNotify} label="Desktop notifications" />
-        </div>
+        <DeviceNotifications />
       </div>
     </Card>
+  );
+}
+
+const PUSH_HINT: Record<PushState, string> = {
+  on: 'New inbox mail shows up on this device, even when MurphyInbox is closed.',
+  off: 'Get new inbox mail on this device, even when MurphyInbox is closed. Each device is turned on separately.',
+  denied: 'This browser is blocking notifications for MurphyInbox. Allow them in the site settings, then come back.',
+  unsupported: "This browser doesn't support notifications.",
+  'needs-install': 'On iPhone and iPad: tap Share, then Add to Home Screen, and open MurphyInbox from your home screen to turn notifications on.',
+};
+
+function DeviceNotifications() {
+  const [state, setState] = useState<PushState | null>(null);
+  const { run, busy } = useAction();
+  useEffect(() => {
+    pushState().then(setState, () => setState('unsupported'));
+  }, []);
+  const toggle = (on: boolean) =>
+    run('push', async () => {
+      if (on) setState(await enablePush());
+      else {
+        await disablePush();
+        setState(await pushState());
+      }
+    });
+  const canToggle = state === 'on' || state === 'off';
+  return (
+    <div className="flex items-start justify-between gap-4">
+      <div>
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <Bell className="h-4 w-4" /> Notifications on this device
+        </div>
+        <div className="mt-0.5 text-xs text-muted">{state ? PUSH_HINT[state] : 'Checking this device…'}</div>
+        {state === 'on' && (
+          <Button size="sm" variant="secondary" className="mt-2" disabled={busy === 'test'} onClick={() => run('test', testPush, 'Test notification sent')}>
+            Send a test
+          </Button>
+        )}
+      </div>
+      {canToggle && <Switch checked={state === 'on'} onChange={toggle} disabled={busy === 'push'} label="Notifications on this device" />}
+    </div>
   );
 }
 

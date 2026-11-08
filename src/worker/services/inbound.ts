@@ -24,6 +24,7 @@ import { applyFilters, loadFilters, type FilterActions } from './filters';
 import { counterStmt, dailyStatStmt, inboundLogStmt, logInbound } from './stats';
 import { bumpState, type AutoReply } from './mailboxes';
 import { maybeAutoReply } from './autoreply';
+import { notifyNewMail } from './push';
 
 export interface Recipient {
   mailboxId: number;
@@ -415,6 +416,14 @@ export async function ingest(c: Context, bytes: Uint8Array, o: IngestOptions): P
   });
 
   if (!spamReason && o.message) await sideEffects(c, o, mailboxId, threadId, p, actions);
+  // Only mail that lands in the inbox, unread, from Email Routing (not imports or retries).
+  if (folder === 'inbox' && !isRead && o.message && o.ctx) {
+    o.ctx.waitUntil(
+      notifyNewMail(env, settings, { mailboxId, threadId, fromName: p.from.name, fromAddress: p.from.address, subject: p.subject, snippet }).catch((e) =>
+        logError('push.notify_failed', e),
+      ),
+    );
+  }
   return { status: spamReason ? 'spam' : 'delivered', messageId, threadId };
 }
 

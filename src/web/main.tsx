@@ -4,11 +4,17 @@ import { BrowserRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApiError, onApiError } from './lib/api';
 import { initTheme } from './lib/theme';
+import { registerServiceWorker } from './lib/push';
 import { ToastProvider } from './components/ui/overlay';
 import { App } from './App';
 import './index.css';
 
 initTheme();
+// A tapped notification routes the open window to the thread (BrowserRouter follows popstate).
+registerServiceWorker((url) => {
+  window.history.pushState({}, '', url);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+});
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -2,7 +2,7 @@
 import { Hono } from 'hono';
 import type { AppBindings } from '../types';
 import { body } from '../lib/validate';
-import { passwordChangeSchema, profileSchema, totpSchema, trustedSenderSchema } from '../../shared/schemas';
+import { passwordChangeSchema, profileSchema, pushEndpointSchema, pushSubscriptionSchema, totpSchema, trustedSenderSchema } from '../../shared/schemas';
 import { all, first, run } from '../db/db';
 import { currentUser, clientIp } from '../auth/middleware';
 import { verifyPassword } from '../lib/password';
@@ -11,6 +11,7 @@ import { hashRecoveryCode, newRecoveryCodes, newTotpSecret, otpauthUri, verifyTo
 import { badRequest, HttpError, notFound } from '../lib/errors';
 import { changePassword, type UserRow } from '../services/users';
 import { audit } from '../services/audit';
+import { pushTo, vapidKeys } from '../services/push';
 
 export const account = new Hono<AppBindings>();
 
@@ -110,5 +111,68 @@ account.post('/trusted-senders', async (c) => {
 account.delete('/trusted-senders/:pattern', async (c) => {
   const user = currentUser(c);
   await run(c.env.DB, 'DELETE FROM trusted_senders WHERE user_id = ? AND pattern = ?', user.id, decodeURIComponent(c.req.param('pattern')));
+  return c.json({ ok: true });
+});
+
+// Web Push. The public key is what the browser subscribes with; each device posts its subscription.
+account.get('/push/key', async (c) => {
+  const keys = await vapidKeys(c.env, c.get('settings'));
+  return c.json({ publicKey: keys.publicKey });
+});
+
+account.get('/push/subscriptions', async (c) => {
+  const rows = await all<{ endpoint: string; user_agent: string | null; created_at: number; last_success_at: number | null }>(
+    c.env.DB,
+    'SELECT endpoint, user_agent, created_at, last_success_at FROM push_subscriptions WHERE user_id = ? ORDER BY created_at DESC',
+    currentUser(c).id,
+  );
+  return c.json({ devices: rows.map((r) => ({ endpoint: r.endpoint, userAgent: r.user_agent, createdAt: r.created_at, lastSuccessAt: r.last_success_at })) });
+});
+
+// Upsert: the app re-posts its subscription on every start, so a rotated key or a device that
+// moved to another account stays correct.
+account.post('/push/subscriptions', async (c) => {
+  const user = currentUser(c);
+  const { endpoint, keys } = await body(c, pushSubscriptionSchema);
+  const count = await first<{ n: number }>(c.env.DB, 'SELECT COUNT(*) AS n FROM push_subscriptions WHERE user_id = ? AND endpoint != ?', user.id, endpoint);
+  if ((count?.n ?? 0) >= 10) throw badRequest('Notifications are on for 10 devices already. Turn them off on one first.');
+  await run(
+    c.env.DB,
+    `INSERT INTO push_subscriptions (user_id, endpoint, p256dh, auth, user_agent, created_at) VALUES (?, ?, ?, ?, ?, ?)
+     ON CONFLICT (endpoint) DO UPDATE SET user_id = excluded.user_id, p256dh = excluded.p256dh, auth = excluded.auth,
+       user_agent = excluded.user_agent, failures = 0`,
+    user.id,
+    endpoint,
+    keys.p256dh,
+    keys.auth,
+    (c.req.header('User-Agent') ?? '').slice(0, 300) || null,
+    Date.now(),
+  );
+  return c.json({ ok: true });
+});
+
+account.post('/push/unsubscribe', async (c) => {
+  const { endpoint } = await body(c, pushEndpointSchema);
+  await run(c.env.DB, 'DELETE FROM push_subscriptions WHERE endpoint = ? AND user_id = ?', endpoint, currentUser(c).id);
+  return c.json({ ok: true });
+});
+
+account.post('/push/test', async (c) => {
+  const { endpoint } = await body(c, pushEndpointSchema);
+  const subs = await all<{ id: number; endpoint: string; p256dh: string; auth: string }>(
+    c.env.DB,
+    'SELECT id, endpoint, p256dh, auth FROM push_subscriptions WHERE user_id = ? AND endpoint = ?',
+    currentUser(c).id,
+    endpoint,
+  );
+  if (!subs.length) throw notFound('Notifications are not on for this device.');
+  const sent = await pushTo(c.env, c.get('settings'), subs, {
+    kind: 'test',
+    title: 'MurphyInbox',
+    body: 'Notifications work on this device.',
+    url: '/mail',
+    tag: 'test',
+  });
+  if (!sent) throw new HttpError(502, 'push_failed', 'The push service did not accept the notification. Turn notifications off and on again.');
   return c.json({ ok: true });
 });

@@ -7,6 +7,7 @@ import { errorText, post } from '../../lib/api';
 import type { Session } from '../../lib/types';
 import { useTheme, type Theme } from '../../lib/theme';
 import { cn } from '../../lib/utils';
+import { forgetDevice, refreshPush } from '../../lib/push';
 import { CommandPalette, KeyCombo, SHORTCUTS } from '../../pages/mail/CommandPalette';
 import { LogoMark } from '../Logo';
 import { Dialog, Menu, MenuItem, MenuLabel, MenuSeparator, useToast } from '../ui/overlay';
@@ -26,6 +27,10 @@ export function AppShell() {
   const [help, setHelp] = useState(false);
 
   // Ctrl/⌘ K and the shortcuts help work on every page.
+  // Keep this device's push subscription current on the server.
+  useEffect(() => {
+    refreshPush().catch(() => undefined);
+  }, []);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -44,6 +49,7 @@ export function AppShell() {
 
   const signOut = async () => {
     try {
+      await forgetDevice();
       await post('/auth/logout');
     } catch (e) {
       toast.error(errorText(e));

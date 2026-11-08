@@ -177,3 +177,11 @@ export const noteSchema = z.object({ body: z.string().trim().min(1).max(5000) })
 export const blockSchema = z.object({ pattern: z.string().trim().min(3).max(254), mailboxId: id.nullable().optional() });
 export const destinationSchema = z.object({ email: z.string().trim().email().max(254) });
 export const trustedSenderSchema = z.object({ pattern: z.string().trim().min(3).max(254) });
+
+// A browser PushSubscription.toJSON(), as sent by the app when notifications are turned on.
+const base64url = z.string().trim().min(16).max(200).regex(/^[A-Za-z0-9_-]+=*$/);
+export const pushSubscriptionSchema = z.object({
+  endpoint: z.string().trim().url().max(1000).refine((u) => u.startsWith('https://'), 'Push endpoints use HTTPS.'),
+  keys: z.object({ p256dh: base64url, auth: base64url.min(16).max(64) }),
+});
+export const pushEndpointSchema = z.object({ endpoint: z.string().trim().max(1000) });

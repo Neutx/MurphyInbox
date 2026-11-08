@@ -3,7 +3,6 @@ import { useInfiniteQuery, useQuery, useQueryClient, type InfiniteData } from '@
 import { get, post } from '../../lib/api';
 import { viewQuery } from '../../lib/mail';
 import type { Mailbox, ThreadDetail, ThreadSummary } from '../../lib/types';
-import { storageGet } from '../../lib/utils';
 
 export function useMailboxes() {
   return useQuery({ queryKey: ['mailboxes'], queryFn: () => get<Mailbox[]>('/mailboxes'), staleTime: 60_000 });
@@ -81,14 +80,10 @@ export function useThreadActions() {
 }
 
 // Polls the per-mailbox state counters (a few rows) and refreshes lists when something changed.
-// Also raises a browser notification for new inbox mail while the tab is in the background.
-export function useMailSync(mailboxes: Mailbox[] | undefined) {
+// Push notifications (lib/push.ts, sw.js) replace the old in-tab notification and trigger a poll.
+export function useMailSync() {
   const qc = useQueryClient();
   const last = useRef<Record<string, number> | null>(null);
-  const unreadRef = useRef<number>(0);
-  useEffect(() => {
-    unreadRef.current = (mailboxes ?? []).reduce((n, m) => n + (m.unread.inbox ?? 0), 0);
-  }, [mailboxes]);
   useEffect(() => {
     let stopped = false;
     let timer: ReturnType<typeof setTimeout>;
@@ -98,16 +93,9 @@ export function useMailSync(mailboxes: Mailbox[] | undefined) {
         const prev = last.current;
         last.current = states;
         if (prev && Object.keys(states).some((k) => states[k] !== prev[k])) {
-          const before = unreadRef.current;
           await qc.invalidateQueries({ queryKey: ['mailboxes'] });
           qc.invalidateQueries({ queryKey: ['threads'] });
           qc.invalidateQueries({ queryKey: ['thread'] });
-          const boxes = qc.getQueryData<Mailbox[]>(['mailboxes']) ?? [];
-          const after = boxes.reduce((n, m) => n + (m.unread.inbox ?? 0), 0);
-          if (after > before && document.hidden && storageGet('oi.notify', false) && 'Notification' in window && Notification.permission === 'granted') {
-            const n = new Notification('New mail', { body: `${after - before} new conversation${after - before === 1 ? '' : 's'} in your inbox`, tag: 'openinbox-new-mail', icon: '/icon-192.png' });
-            n.onclick = () => window.focus();
-          }
         }
       } catch {
         // offline or signed out; the session handler deals with the latter
@@ -122,10 +110,18 @@ export function useMailSync(mailboxes: Mailbox[] | undefined) {
       }
     };
     document.addEventListener('visibilitychange', onVisible);
+    // A push for new mail: refresh now instead of waiting for the next poll.
+    const onPush = (e: MessageEvent<{ type?: string }>) => {
+      if (e.data?.type !== 'push') return;
+      clearTimeout(timer);
+      tick();
+    };
+    navigator.serviceWorker?.addEventListener('message', onPush);
     return () => {
       stopped = true;
       clearTimeout(timer);
       document.removeEventListener('visibilitychange', onVisible);
+      navigator.serviceWorker?.removeEventListener('message', onPush);
     };
   }, [qc]);
 }

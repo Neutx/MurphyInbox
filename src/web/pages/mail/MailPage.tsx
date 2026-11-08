@@ -42,7 +42,7 @@ function MailApp() {
   const threadId = params.threadId ? Number(params.threadId) : null;
   const query = search.get('q') ?? '';
   const { data: mailboxes, isLoading } = useMailboxes();
-  useMailSync(mailboxes);
+  useMailSync();
   const threads = useThreads(mailboxParam, view, query);
   const list = useMemo(() => threads.data?.pages.flatMap((p) => p.threads) ?? [], [threads.data]);
   const act = useThreadActions();

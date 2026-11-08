@@ -22,6 +22,7 @@ export interface AppSettings {
   remoteImages: RemoteImagesPolicy;
   keyCheck: string | null; // a known value encrypted at setup, to detect a changed ENCRYPTION_KEY
   keyGeneratedAt: number | null; // set when setup generated ENCRYPTION_KEY instead of the deployer
+  pushVapidEnc: string | null; // encrypted Web Push (VAPID) key pair, generated on first use
 }
 
 const KEYS: Record<keyof AppSettings, string> = {
@@ -43,6 +44,7 @@ const KEYS: Record<keyof AppSettings, string> = {
   remoteImages: 'mail.remote_images',
   keyCheck: 'crypto.key_check',
   keyGeneratedAt: 'crypto.key_generated_at',
+  pushVapidEnc: 'push.vapid',
 };
 
 const NUMERIC = new Set<keyof AppSettings>(['setupCompletedAt', 'keyGeneratedAt', 'maxInboundMb', 'trashRetentionDays', 'spamRetentionDays']);
@@ -66,6 +68,7 @@ const DEFAULTS: AppSettings = {
   remoteImages: DEFAULT_SETTINGS.remoteImages,
   keyCheck: null,
   keyGeneratedAt: null,
+  pushVapidEnc: null,
 };
 
 const TTL = 10_000;

@@ -11,3 +11,7 @@
 
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+
+# The service worker must be re-checked on every load so updates reach devices.
+/sw.js
+  Cache-Control: no-cache
