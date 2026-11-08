@@ -226,7 +226,7 @@ admin.post('/domains', async (c) => {
   const zone = await cf.get<{ id: string; name: string }>(`/zones/${input.zoneId}`);
   const inspection = await inspectZone(cf, input.zoneId, settings.cfWorkerName);
   if (inspection.mxState === 'other' && !input.replaceMx) {
-    throw new HttpError(409, 'mx_conflict', `${zone.name} already receives mail elsewhere. Confirm that OpenInbox should take over its mail.`, { mx: inspection.mx });
+    throw new HttpError(409, 'mx_conflict', `${zone.name} already receives mail elsewhere. Confirm that MurphyInbox should take over its mail.`, { mx: inspection.mx });
   }
   const d = await createDomain(c.env.DB, zone, input.replaceMx);
   await audit(c.env.DB, { userId: currentUser(c).id, action: 'domain.added', target: zone.name, ip: clientIp(c) });
@@ -452,7 +452,7 @@ admin.post('/storage/bucket', async (c) => {
 
 admin.post('/storage/r2', async (c) => {
   const settings = await settingsOf(c);
-  if (!settings.cfAccountId) throw conflict('OpenInbox does not know your Cloudflare account yet.');
+  if (!settings.cfAccountId) throw conflict('MurphyInbox does not know your Cloudflare account yet.');
   const input = await body(c, r2Schema);
   const config: R2Config = { accountId: settings.cfAccountId, bucket: input.bucket, accessKeyId: input.accessKeyId, secretAccessKey: input.secretAccessKey };
   try {
@@ -529,7 +529,7 @@ admin.post('/reencrypt', async (c) => {
   await saveSettings(db, {
     cfTokenEnc: s.cfTokenEnc ? await encrypt(env, await decrypt(env, s.cfTokenEnc)) : null,
     r2Enc: s.r2Enc ? await encrypt(env, await decrypt(env, s.r2Enc)) : null,
-    keyCheck: await encrypt(env, 'openinbox'),
+    keyCheck: await encrypt(env, 'murphyinbox'),
   });
   await audit(db, { userId: currentUser(c).id, action: 'crypto.reencrypted', details: { count }, ip: clientIp(c) });
   return c.json({ ok: true, count });
@@ -559,7 +559,7 @@ admin.get('/mailflow', async (c) => {
   return c.json(rows.map((r) => ({ id: r.id, at: r.received_at, from: r.mail_from, to: r.rcpt_to, subject: r.subject, size: r.size, status: r.status, reason: r.reason })));
 });
 
-// Cloudflare's own Email Routing log: includes mail rejected before it reached OpenInbox.
+// Cloudflare's own Email Routing log: includes mail rejected before it reached MurphyInbox.
 admin.get('/mailflow/cloudflare', async (c) => {
   const settings = await settingsOf(c);
   const cf = await requireCf(c.env, settings);

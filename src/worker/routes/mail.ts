@@ -183,11 +183,11 @@ mail.get('/messages/:id/raw', async (c) => {
     subject: row.subject,
     text: b.text,
     html: b.html,
-    messageId: row.message_id ?? `${m.messageId}@openinbox.invalid`,
+    messageId: row.message_id ?? `${m.messageId}@murphyinbox.invalid`,
     inReplyTo: row.in_reply_to,
     references: (row.refs ?? '').split(' ').filter(Boolean),
     date: new Date(row.sent_at),
-    headers: { 'X-OpenInbox-Reconstructed': 'yes (the original was too large to keep in text-only mode)' },
+    headers: { 'X-MurphyInbox-Reconstructed': 'yes (the original was too large to keep in text-only mode)' },
   });
   return new Response(raw, { headers: { 'Content-Type': 'message/rfc822', 'Content-Disposition': contentDisposition('attachment', name), 'Cache-Control': 'private, no-store' } });
 });

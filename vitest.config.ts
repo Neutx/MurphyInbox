@@ -22,7 +22,7 @@ export default defineConfig(async () => {
             BREVO_API_BASE: 'https://brevo.test/v3',
             MAILJET_API_BASE: 'https://mailjet.test',
             GITHUB_API_BASE: 'https://github.test',
-            WORKER_NAME: 'openinbox',
+            WORKER_NAME: 'murphyinbox',
           },
         },
       }),

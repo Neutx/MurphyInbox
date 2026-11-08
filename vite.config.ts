@@ -17,7 +17,7 @@ const e2eVars = {
   BREVO_API_BASE: 'http://127.0.0.1:8790/brevo',
   MAILJET_API_BASE: 'http://127.0.0.1:8790/mailjet',
   GITHUB_API_BASE: 'http://127.0.0.1:8790/github',
-  WORKER_NAME: 'openinbox',
+  WORKER_NAME: 'murphyinbox',
 };
 
 export default defineConfig({

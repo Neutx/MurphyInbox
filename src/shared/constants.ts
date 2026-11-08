@@ -2,9 +2,8 @@
 
 export const APP_NAME = 'MurphyInbox';
 
-// The upstream repository, used for the in-app "update available" notice. Forks and Deploy
-// button copies keep pointing here so they hear about new releases.
-export const UPSTREAM_REPO = 'sums001/OpenInbox';
+// The project's repository: the in-app "update available" notice reads its latest release.
+export const APP_REPO = 'Neutx/MurphyInbox';
 
 // Cloudflare free-plan limits the dashboard measures against. Daily limits reset at 00:00 UTC.
 export const FREE_LIMITS = {
@@ -106,14 +105,14 @@ export type LabelColor = (typeof LABEL_COLORS)[number];
 export const ROLES = ['owner', 'admin', 'member'] as const;
 export type Role = (typeof ROLES)[number];
 
-// Cloudflare API token permissions OpenInbox needs. `id` is the permission group ID (from the
+// Cloudflare API token permissions MurphyInbox needs. `id` is the permission group ID (from the
 // List permission groups API), which the pre-filled token link uses: the dashboard has no short key
 // for the Email Routing permissions and silently drops unknown ones. `optional` ones unlock extras.
 export const TOKEN_PERMISSIONS = [
   { key: 'zone', id: 'c8fed203ed3043cba015a93ad1616f1f', type: 'read', scope: 'Zone', name: 'Zone', access: 'Read', why: 'List your domains', optional: false },
   { key: 'dns', id: '4755a26eedb94da69e1066d98aa820be', type: 'edit', scope: 'Zone', name: 'DNS', access: 'Edit', why: 'Write MX, SPF, DKIM and DMARC records', optional: false },
   { key: 'zone_settings', id: '3030687196b94b638145a3953da2b699', type: 'edit', scope: 'Zone', name: 'Zone Settings', access: 'Edit', why: 'Turn on Email Routing', optional: false },
-  { key: 'email_routing_rules', id: '79b3ec0d10ce4148a8f8bdc0cc5f97f2', type: 'edit', scope: 'Zone', name: 'Email Routing Rules', access: 'Edit', why: 'Route mail to OpenInbox', optional: false },
+  { key: 'email_routing_rules', id: '79b3ec0d10ce4148a8f8bdc0cc5f97f2', type: 'edit', scope: 'Zone', name: 'Email Routing Rules', access: 'Edit', why: 'Route mail to MurphyInbox', optional: false },
   { key: 'workers_routes', id: '28f4b596e7d643029c524985477ae49a', type: 'edit', scope: 'Zone', name: 'Workers Routes', access: 'Edit', why: 'Open the app on mail.yourdomain', optional: true },
   { key: 'analytics', id: '9c88f9c5bce24ce7af9a958ba9c504db', type: 'read', scope: 'Zone', name: 'Analytics', access: 'Read', why: 'Show Email Routing delivery logs', optional: true },
   { key: 'workers_scripts', id: 'e086da7e2179491d91ee5f35b3ca210a', type: 'edit', scope: 'Account', name: 'Workers Scripts', access: 'Edit', why: 'Find this Worker and its database', optional: false },
@@ -131,6 +130,6 @@ export const ACCOUNT_TOKENS_URL = 'https://dash.cloudflare.com/?to=/:account/api
 
 export function tokenTemplateUrl(): string {
   const keys = TOKEN_PERMISSIONS.map(({ id, type }) => ({ key: id, type }));
-  const params = new URLSearchParams({ permissionGroupKeys: JSON.stringify(keys), name: 'OpenInbox' });
+  const params = new URLSearchParams({ permissionGroupKeys: JSON.stringify(keys), name: 'MurphyInbox' });
   return `${ACCOUNT_TOKENS_URL}&${params}`;
 }

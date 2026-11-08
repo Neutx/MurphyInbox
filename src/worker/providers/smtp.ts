@@ -138,7 +138,7 @@ export class SmtpAdapter implements ProviderAdapter {
   ) {}
 
   async validate() {
-    await smtpSession(this.config, 'openinbox.invalid', async () => null, this.connect);
+    await smtpSession(this.config, 'murphyinbox.invalid', async () => null, this.connect);
     return { account: `${this.config.username || 'anonymous'}@${this.config.host}:${this.config.port}` };
   }
 

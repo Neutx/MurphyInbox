@@ -1,5 +1,5 @@
 // Cloudflare Email Sending (https://developers.cloudflare.com/email-service/). Sends through the
-// Cloudflare API with the token OpenInbox already stores, so connecting it needs no second
+// Cloudflare API with the token MurphyInbox already stores, so connecting it needs no second
 // credential. Cloudflare generates the Message-ID and rejects it in `headers`, so replies thread
 // through the References the send pipeline appends (the same as Resend).
 import type { Env } from '../env';
@@ -75,7 +75,7 @@ export class CloudflareAdapter implements ProviderAdapter {
     const settings = await loadSettings(this.env.DB);
     const token = await cfToken(this.env, settings);
     if (!token) throw new ProviderError('Connect a Cloudflare API token first (Integrations > Cloudflare).');
-    if (!settings.cfAccountId) throw new ProviderError('OpenInbox does not know your Cloudflare account yet. Finish setup first.');
+    if (!settings.cfAccountId) throw new ProviderError('MurphyInbox does not know your Cloudflare account yet. Finish setup first.');
     return { cf: new Cloudflare(token, this.env.CF_API_BASE || DEFAULT_CF_API), accountId: settings.cfAccountId };
   }
 

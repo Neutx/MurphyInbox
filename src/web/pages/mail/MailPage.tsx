@@ -117,13 +117,17 @@ function MailApp() {
   );
 
   // mailto: style links, e.g. /mail/all/inbox?compose=ann@example.com (empty: a blank message).
+  // Handled once per link: opening the composer re-renders before the URL loses ?compose=, and
+  // reacting to the same link again looped forever.
+  const composeLink = search.has('compose') ? `${location.key}:${search.get('compose')}` : null;
+  const handledLink = useRef<string | null>(null);
   useEffect(() => {
-    if (search.has('compose') && mailboxes) {
-      const to = search.get('compose');
-      openCompose(to ? { to: [{ name: '', address: to }] } : undefined);
-      navigate(location.pathname, { replace: true });
-    }
-  }, [search, mailboxes, openCompose, navigate, location.pathname]);
+    if (!composeLink || !mailboxes || handledLink.current === composeLink) return;
+    handledLink.current = composeLink;
+    const to = search.get('compose');
+    openCompose(to ? { to: [{ name: '', address: to }] } : undefined);
+    navigate(location.pathname, { replace: true });
+  }, [composeLink, search, mailboxes, openCompose, navigate, location.pathname]);
 
   // The command palette lives in the app shell and asks for these.
   useEffect(() => {

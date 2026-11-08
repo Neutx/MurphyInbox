@@ -58,6 +58,7 @@ function aesKey(secret: string): Promise<CryptoKey> {
     key = (async () => {
       const base = await crypto.subtle.importKey('raw', encoder.encode(secret), 'HKDF', false, ['deriveKey']);
       return crypto.subtle.deriveKey(
+        // Fixed salt and info: every stored credential is encrypted under them, so they never change.
         { name: 'HKDF', hash: 'SHA-256', salt: encoder.encode('openinbox'), info: encoder.encode('openinbox credentials v1') },
         base,
         { name: 'AES-GCM', length: 256 },

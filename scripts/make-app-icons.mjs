@@ -1,4 +1,5 @@
-// Renders the native app icons (desktop/ and android/) from the logo in src/web/public/favicon.svg.
+// Renders the native app icons (desktop/, android/) and the README brand images (assets/) from the
+// logo in src/web/public/favicon.svg.
 // Uses Playwright's Chromium (a dev dependency): `npx playwright install chromium` first.
 import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname } from 'node:path';
@@ -38,4 +39,33 @@ for (const [d, px] of Object.entries(densities)) {
   await render(`android/app/src/main/res/mipmap-${d}/ic_launcher_round.png`, px, logo.replace(/rx="15"/g, 'rx="32"'), 0.04);
   await render(`android/app/src/main/res/drawable-${d}/ic_notification_icon.png`, Math.round(px / 2), glyph('#fff'));
 }
+
+// README header lockups and the GitHub social preview.
+const font = `-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI Variable Display', 'Segoe UI', sans-serif`;
+async function html(out, w, h, body) {
+  const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 2 });
+  await page.setContent(`<html><body style="margin:0;font-family:${font}">${body}</body></html>`);
+  await page.screenshot({ path: root(out), omitBackground: true });
+  await page.close();
+  console.log(out);
+}
+const lockup = (color) =>
+  `<div style="display:flex;align-items:center;gap:18px;height:96px;padding:0 4px"><div style="width:84px;height:84px">${sized(logo)}</div><span style="font-size:52px;font-weight:650;letter-spacing:-0.02em;color:${color}">MurphyInbox</span></div>`;
+await html('assets/logo-light.png', 420, 96, lockup('#1d1d1f'));
+await html('assets/logo-dark.png', 420, 96, lockup('#f5f5f7'));
+const shot = `data:image/png;base64,${readFileSync(root('assets/screens/mail-light.png')).toString('base64')}`;
+await html(
+  'assets/social-preview.png',
+  1280,
+  640,
+  `<div style="width:1280px;height:640px;background:#f2f2f7;position:relative;overflow:hidden">
+    <div style="position:absolute;left:72px;top:76px;width:500px">
+      <div style="width:88px;height:88px">${sized(logo)}</div>
+      <div style="margin-top:34px;font-size:64px;font-weight:700;letter-spacing:-0.03em;color:#1d1d1f;line-height:1.02">MurphyInbox</div>
+      <div style="margin-top:20px;font-size:28px;line-height:1.3;color:#3a3a3c;letter-spacing:-0.01em">Business email on your own domains, running free in your Cloudflare account.</div>
+      <div style="margin-top:34px;font-size:20px;color:#1665c1;font-weight:600">Web · Windows · macOS · Android</div>
+    </div>
+    <img src="${shot}" style="position:absolute;left:620px;top:84px;width:900px;border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.18),0 0 0 1px rgba(0,0,0,.06)">
+  </div>`,
+);
 await browser.close();

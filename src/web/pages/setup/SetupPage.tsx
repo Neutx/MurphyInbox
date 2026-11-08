@@ -547,7 +547,7 @@ function RecoveryKey({ value }: { value: string }) {
             onClick={() =>
               downloadBlob(
                 new Blob([`MurphyInbox recovery key (ENCRYPTION_KEY) for ${location.host}\n\n${value}\n`], { type: 'text/plain' }),
-                'openinbox-recovery-key.txt',
+                'murphyinbox-recovery-key.txt',
               )
             }
           >

@@ -68,8 +68,8 @@ export class R2S3Store implements BlobStore {
 
   // Put, read back and delete a test object: proves the credentials and bucket work.
   async selfTest(): Promise<void> {
-    const key = `openinbox-selftest/${crypto.randomUUID()}`;
-    const payload = new TextEncoder().encode(`openinbox ${new Date().toISOString()}`);
+    const key = `murphyinbox-selftest/${crypto.randomUUID()}`;
+    const payload = new TextEncoder().encode(`murphyinbox ${new Date().toISOString()}`);
     await this.put(key, payload, 'text/plain');
     const back = await this.get(key);
     await this.delete([key]);

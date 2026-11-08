@@ -19,7 +19,7 @@ describe('first-run setup', () => {
     expect(status.checks.database.ok).toBe(true);
     expect(status.checks.encryptionKey.ok).toBe(true);
     expect(status.checks.cloudflare.ok).toBe(true);
-    expect(status.checks.worker).toMatchObject({ ok: true, name: 'openinbox', subdomain: 'tester' });
+    expect(status.checks.worker).toMatchObject({ ok: true, name: 'murphyinbox', subdomain: 'tester' });
     expect(status.zones.map((z: { name: string }) => z.name)).toEqual(['example.com', 'workspace.dev']);
     expect(status.permissions.find((p: { key: string }) => p.key === 'dns').ok).toBe(true);
 
@@ -45,7 +45,7 @@ describe('first-run setup', () => {
     }
     expect(state.done).toBe(true);
     expect(fake.state.routing.zone_example).toEqual({ enabled: true, status: 'ready' });
-    expect(fake.state.catchAll.zone_example.actions).toEqual([{ type: 'worker', value: ['openinbox'] }]);
+    expect(fake.state.catchAll.zone_example.actions).toEqual([{ type: 'worker', value: ['murphyinbox'] }]);
     const dmarc = fake.state.dns.zone_example.filter((x) => x.name === '_dmarc.example.com');
     expect(dmarc).toHaveLength(1);
     // Running the steps again changes nothing (idempotent).
@@ -74,12 +74,12 @@ describe('first-run setup', () => {
     fake.state.accounts = [{ id: 'acc_other', name: 'Someone else' }];
     fake.state.subdomain = 'someone-else';
     expect(await c.status('POST', '/api/setup/token', { token: 'valid-token-0123456789abcdef' })).toBe(400);
-    expect(fake.state.scripts.openinbox.secrets).toBeUndefined();
+    expect(fake.state.scripts.murphyinbox.secrets).toBeUndefined();
     fake.reset();
 
     const { recoveryKey } = await c.post('/api/setup/token', { token: 'valid-token-0123456789abcdef' });
     expect(recoveryKey).toMatch(/^[0-9a-f]{64}$/);
-    expect(fake.state.scripts.openinbox.secrets).toEqual({ ENCRYPTION_KEY: recoveryKey });
+    expect(fake.state.scripts.murphyinbox.secrets).toEqual({ ENCRYPTION_KEY: recoveryKey });
 
     // Until the new version with the secret is live, setup waits for it.
     status = await c.get('/api/setup/status');
@@ -91,7 +91,7 @@ describe('first-run setup', () => {
     status = await c.get('/api/setup/status');
     expect(status.checks.encryptionKey).toMatchObject({ ok: true, state: 'generated' });
     expect(status.checks.cloudflare).toMatchObject({ ok: true, source: 'stored' });
-    expect(status.checks.worker).toMatchObject({ ok: true, name: 'openinbox' });
+    expect(status.checks.worker).toMatchObject({ ok: true, name: 'murphyinbox' });
 
     // Changing the token keeps the key; asking for a new key replaces it.
     expect((await c.post('/api/setup/token', { token: 'valid-token-0123456789abcdef' })).recoveryKey).toBeNull();

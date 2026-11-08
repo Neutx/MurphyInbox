@@ -64,7 +64,7 @@ export function catchAllTargetsWorker(rule: RoutingRule | null, worker: string):
 
 export async function setCatchAllToWorker(cf: Cloudflare, zoneId: string, worker: string): Promise<RoutingRule> {
   return cf.request<RoutingRule>('PUT', `/zones/${zoneId}/email/routing/rules/catch_all`, {
-    name: 'OpenInbox catch-all',
+    name: 'MurphyInbox catch-all',
     enabled: true,
     matchers: [{ type: 'all' }],
     actions: [{ type: 'worker', value: [worker] }],
@@ -85,7 +85,7 @@ export async function listRules(cf: Cloudflare, zoneId: string): Promise<Routing
 }
 
 // Enabled rules for specific addresses take precedence over the catch-all, so mail for them never
-// reaches OpenInbox. Returns those addresses.
+// reaches MurphyInbox. Returns those addresses.
 export function conflictingRules(rules: RoutingRule[], worker: string): { id?: string; address: string; action: string }[] {
   return rules
     .filter((r) => r.enabled && r.matchers.some((m) => m.type === 'literal'))

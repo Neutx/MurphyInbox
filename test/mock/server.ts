@@ -29,4 +29,4 @@ const server = createServer(async (req, res) => {
   res.end(Buffer.from(await response.arrayBuffer()));
 });
 
-server.listen(port, '127.0.0.1', () => console.log(`OpenInbox mock APIs on http://127.0.0.1:${port}`));
+server.listen(port, '127.0.0.1', () => console.log(`MurphyInbox mock APIs on http://127.0.0.1:${port}`));

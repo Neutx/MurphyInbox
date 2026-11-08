@@ -51,7 +51,7 @@ export function createFakeState(): FakeState {
     denied: [],
     accounts: [{ id: 'acc_test', name: 'Test Account' }],
     subdomain: 'tester',
-    scripts: { openinbox: { d1: 'db_test' } },
+    scripts: { murphyinbox: { d1: 'db_test' } },
     zones: [
       { id: 'zone_example', name: 'example.com', status: 'active' },
       { id: 'zone_gmail', name: 'workspace.dev', status: 'active' },
@@ -74,7 +74,7 @@ export function createFakeState(): FakeState {
     brevo: { domains: {}, emails: [], credits: 300 },
     mailjet: { dns: {}, emails: [] },
     cfSending: { entitled: true, failNext: 0, emails: [] },
-    release: { tag_name: 'v1.0.0', html_url: 'https://github.com/example/openinbox/releases/tag/v1.0.0', body: 'First release.' },
+    release: { tag_name: 'v1.0.0', html_url: 'https://github.com/example/murphyinbox/releases/tag/v1.0.0', body: 'First release.' },
     requests: [],
     seq: 1,
   };
@@ -287,7 +287,7 @@ function zoneName(state: FakeState, zoneId: string): string {
 function graphql(body: { query: string }): Response {
   const q = body?.query ?? '';
   const account: Record<string, unknown> = {};
-  if (q.includes('workersInvocationsAdaptive')) account.workers = [{ sum: { requests: 1234, errors: 2 }, dimensions: { scriptName: 'openinbox' } }];
+  if (q.includes('workersInvocationsAdaptive')) account.workers = [{ sum: { requests: 1234, errors: 2 }, dimensions: { scriptName: 'murphyinbox' } }];
   if (q.includes('d1AnalyticsAdaptiveGroups')) account.d1 = [{ sum: { rowsRead: 45678, rowsWritten: 901 }, dimensions: { databaseId: 'db_test' } }];
   if (q.includes('d1StorageAdaptiveGroups')) account.d1Storage = [{ max: { databaseSizeBytes: 3_500_000 }, dimensions: { databaseId: 'db_test' } }];
   if (q.includes('r2StorageAdaptiveGroups')) {

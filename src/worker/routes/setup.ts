@@ -58,7 +58,7 @@ setup.post('/claim', async (c) => {
   if (!cf) throw new HttpError(409, 'no_cf_token', 'Connect a Cloudflare token first.');
   const inspection = await inspectZone(cf, input.zoneId, settings.cfWorkerName);
   if (inspection.mxState === 'other' && !input.replaceMx) {
-    throw new HttpError(409, 'mx_conflict', `${inspection.name} already receives mail elsewhere. Confirm that OpenInbox should take over its mail.`, {
+    throw new HttpError(409, 'mx_conflict', `${inspection.name} already receives mail elsewhere. Confirm that MurphyInbox should take over its mail.`, {
       mx: inspection.mx,
     });
   }

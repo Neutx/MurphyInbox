@@ -1,7 +1,7 @@
 // Applies the bundled D1 migrations from inside the Worker, so a deploy works whichever command
-// built it (the Deploy button's `npm run deploy`, the dashboard's plain `npx wrangler deploy`, or
-// Sync upstream). It keeps wrangler's own bookkeeping table, so `wrangler d1 migrations apply`
-// and the Worker never apply a migration twice.
+// built it (`npm run deploy`, the Deploy button, or a plain `npx wrangler deploy`). It keeps
+// wrangler's own bookkeeping table, so `wrangler d1 migrations apply` and the Worker never apply a
+// migration twice.
 const files = import.meta.glob<string>('./migrations/*.sql', { query: '?raw', import: 'default', eager: true });
 
 export const MIGRATIONS = Object.entries(files)

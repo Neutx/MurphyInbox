@@ -143,7 +143,7 @@ export interface ZoneInspection {
   mx: { host: string; priority?: number }[];
   mxState: 'none' | 'cloudflare' | 'other';
   routing: { enabled: boolean; status: string } | null;
-  catchAll: 'openinbox' | 'other' | 'none';
+  catchAll: 'murphyinbox' | 'other' | 'none';
   conflicts: { address: string; action: string }[];
 }
 

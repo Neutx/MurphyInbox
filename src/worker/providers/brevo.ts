@@ -135,7 +135,7 @@ export class BrevoAdapter implements ProviderAdapter {
     try {
       const r = await this.call<{ id: number }>('POST', '/webhooks', {
         url,
-        description: 'OpenInbox delivery events',
+        description: 'MurphyInbox delivery events',
         events: ['delivered', 'hardBounce', 'softBounce', 'spam', 'blocked', 'invalid', 'unsubscribed'],
         type: 'transactional',
       });

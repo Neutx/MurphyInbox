@@ -252,7 +252,7 @@ describe('sending', () => {
   });
 
   it('updates delivery status from signed Resend webhooks and suppresses bounces', async () => {
-    await env.DB.prepare("INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES ('app.url', 'https://openinbox.tester.workers.dev', 0)").run();
+    await env.DB.prepare("INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES ('app.url', 'https://murphyinbox.tester.workers.dev', 0)").run();
     const { id: providerId } = await connectResend(admin);
     const boxes = await admin.get('/api/mailboxes');
     const d = await admin.post('/api/drafts', { mailboxId: boxes[0].id, from: 'admin@example.com', to: [{ name: '', address: 'gone@dest.test' }], subject: 'Hello', html: '<p>Hi</p>' });
@@ -284,7 +284,7 @@ describe('sending', () => {
   });
 
   it('replaces the webhook on re-register and deletes it with the provider', async () => {
-    await env.DB.prepare("INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES ('app.url', 'https://openinbox.tester.workers.dev', 0)").run();
+    await env.DB.prepare("INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES ('app.url', 'https://murphyinbox.tester.workers.dev', 0)").run();
     const { id: providerId } = await connectResend(admin);
     expect(fake.state.resend.webhooks).toHaveLength(1);
     await admin.post(`/api/admin/providers/${providerId}/webhook`, {});

@@ -192,7 +192,7 @@ export async function connectToken(env: Env, host: string, token: string, newKey
     cfWorkerName: identity.workerName,
     cfWorkersSubdomain: identity.workersSubdomain,
     cfD1Id: identity.d1Id,
-    ...(generate ? { keyGeneratedAt: Date.now(), keyCheck: await encrypt(keyEnv, 'openinbox') } : {}),
+    ...(generate ? { keyGeneratedAt: Date.now(), keyCheck: await encrypt(keyEnv, 'murphyinbox') } : {}),
   });
   return { recoveryKey };
 }

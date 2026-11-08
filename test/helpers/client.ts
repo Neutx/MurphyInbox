@@ -3,7 +3,7 @@ import { createExecutionContext, env, waitOnExecutionContext } from 'cloudflare:
 import worker from '../../src/worker/index';
 import type { Env } from '../../src/worker/env';
 
-export const ORIGIN = 'https://openinbox.tester.workers.dev';
+export const ORIGIN = 'https://murphyinbox.tester.workers.dev';
 export const ENCRYPTION_KEY = 'test-encryption-key-0123456789abcdef0123456789abcdef';
 
 export class Client {

@@ -1,4 +1,4 @@
-// README screenshots with realistic demo mail. Runs only with OI_SCREENSHOTS=1, after
+// README screenshots (assets/screens) with realistic demo mail. Runs only with OI_SCREENSHOTS=1, after
 // app.spec.ts has set up the instance (files run in name order with one worker).
 import { expect, test, type Page } from '@playwright/test';
 
@@ -44,8 +44,9 @@ async function login(page: Page) {
 }
 
 test('README screenshots', async ({ page }) => {
+  test.setTimeout(180_000);
   await deliver('nora@northwind.test', 'Nora Patel', 'Contract renewal for 2027', 'Hi Sam,\n\nAttached is the renewal draft. The main change is the support tier.\n\nCould you review by Friday?\n\nThanks,\nNora', { attach: 'Renewal-2027.pdf' });
-  await deliver('github@notifications.test', 'GitHub', '[openinbox] Release v1.0.0 published', 'A new release is available: v1.0.0.');
+  await deliver('github@notifications.test', 'GitHub', '[MurphyInbox] Release v1.1.0 published', 'A new release is available: v1.1.0, with Windows, macOS and Android apps.');
   await deliver('alex@studio.test', 'Alex Rivera', 'Design review notes', 'Loved the new inbox layout. Two small things on the composer spacing; details inside.');
   await deliver('billing@cloud.test', 'Cloud Billing', 'Your October invoice', 'Your invoice for October is ready. Total: 0.00 USD (free plan).');
   await deliver(
@@ -60,26 +61,72 @@ test('README screenshots', async ({ page }) => {
   );
   await deliver('maya@acme.test', 'Maya Chen', 'Team offsite in December', 'Hi all,\n\nWe are planning the offsite for the second week of December. Please vote for the location by Wednesday.\n\nMaya');
 
+  const shot = (name: string) => page.screenshot({ path: `assets/screens/${name}.png` });
+  const theme = (t: 'light' | 'dark' | 'system') => page.evaluate((v) => localStorage.setItem('oi.theme', JSON.stringify(v)), t);
   await login(page);
-  await page.goto('/admin');
-  await page.waitForTimeout(1200);
-  await page.screenshot({ path: 'docs/screenshots/admin-dashboard.png' });
 
-  await page.goto('/admin/integrations');
-  await page.waitForTimeout(1000);
-  await page.screenshot({ path: 'docs/screenshots/admin-integrations.png' });
-
+  // Mail, light: a thread with an attachment open beside the list.
   await page.goto('/mail/all/inbox');
-  await page.waitForTimeout(1000);
   await page.getByText('Contract renewal for 2027').click();
   await page.waitForTimeout(1200);
-  await page.screenshot({ path: 'docs/screenshots/mail.png' });
+  await shot('mail-light');
 
-  await page.evaluate(() => localStorage.setItem('oi.theme', '"dark"'));
+  // Composer and command palette.
+  await page.goto('/mail/all/inbox?compose=nora@northwind.test');
+  await page.waitForTimeout(1200);
+  await page.getByLabel('Subject').fill('Re: Contract renewal for 2027');
+  await page.locator('[contenteditable="true"]').first().click();
+  await page.keyboard.type('Thanks Nora, the new support tier looks right. Signed copy attached by Friday.');
+  await page.waitForTimeout(400);
+  await shot('mail-composer');
+  await page.goto('/mail/all/inbox');
+  await page.waitForTimeout(800);
+  await page.getByRole('button', { name: /Jump to/ }).click();
+  await page.getByPlaceholder('Type a command or search…').fill('offsite');
+  await page.waitForTimeout(800);
+  await shot('mail-command-palette');
+
+  // Admin.
+  await page.goto('/admin');
+  await page.waitForTimeout(1500);
+  await shot('admin-overview-light');
+  for (const [path, name] of [['/admin/users', 'admin-users'], ['/admin/domains', 'admin-domains'], ['/admin/integrations', 'admin-integrations']]) {
+    await page.goto(path);
+    await page.waitForTimeout(1200);
+    await shot(name);
+  }
+
+  // Settings: theme, accent color and per-device notifications.
+  await page.context().grantPermissions(['notifications']);
+  await page.goto('/settings/appearance');
+  await page.waitForTimeout(1000);
+  await page.getByRole('radio', { name: 'Teal' }).click();
+  await page.waitForTimeout(400);
+  await shot('settings-appearance');
+  await page.getByRole('radio', { name: 'Murphy Blue' }).click();
+
+  // Dark mode.
+  await theme('dark');
   await page.goto('/mail/all/inbox');
   await page.waitForTimeout(800);
   await page.getByText('Edge databases, Rust in the browser').click();
   await page.waitForTimeout(1200);
-  await page.screenshot({ path: 'docs/screenshots/mail-dark.png' });
-  await page.evaluate(() => localStorage.setItem('oi.theme', '"system"'));
+  await shot('mail-dark');
+  await page.goto('/admin');
+  await page.waitForTimeout(1500);
+  await shot('admin-overview-dark');
+  await page.goto('/admin/mailflow');
+  await page.waitForTimeout(1200);
+  await shot('admin-mail-flow-dark');
+
+  // Phone (the installable app).
+  await theme('light');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/mail/all/inbox');
+  await page.waitForTimeout(1200);
+  await shot('mobile-inbox');
+  await page.getByText('Contract renewal for 2027').click();
+  await page.waitForTimeout(1200);
+  await shot('mobile-thread');
+  await theme('system');
 });

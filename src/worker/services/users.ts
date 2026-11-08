@@ -64,7 +64,7 @@ export async function claimInstance(env: Env, cf: Cloudflare, input: ClaimInput,
     address,
     displayName: input.displayName.trim(),
   });
-  const keyCheck = await encrypt(env, 'openinbox');
+  const keyCheck = await encrypt(env, 'murphyinbox');
   try {
     await env.DB.batch([
       env.DB.prepare("INSERT INTO settings (key, value, updated_at) VALUES ('setup.completed_at', ?, ?)").bind(String(now), now),

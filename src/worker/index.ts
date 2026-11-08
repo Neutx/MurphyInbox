@@ -1,4 +1,4 @@
-// OpenInbox Worker entry points: the API (fetch), inbound mail from Email Routing (email), and
+// MurphyInbox Worker entry points: the API (fetch), inbound mail from Email Routing (email), and
 // background jobs (scheduled).
 import type { Env } from './env';
 import { app } from './app';

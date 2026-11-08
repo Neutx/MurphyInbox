@@ -1,6 +1,6 @@
 // The whole product, in order: setup and claim, dashboard, sending provider, users, receiving,
 // reading, replying with correct threading headers, search, and member isolation.
-// With OI_SCREENSHOTS=1 it also refreshes the README screenshots in docs/screenshots.
+// With OI_SCREENSHOTS=1 it also refreshes the README screenshots in assets/screens.
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
@@ -22,7 +22,7 @@ function encryptionKey(): string {
 async function shot(page: Page, name: string) {
   if (!shots) return;
   await page.waitForTimeout(500);
-  await page.screenshot({ path: `docs/screenshots/${name}.png` });
+  await page.screenshot({ path: `assets/screens/${name}.png` });
 }
 
 async function deliver(raw: string, from: string, to: string) {

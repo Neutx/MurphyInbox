@@ -25,7 +25,7 @@ import { newId } from '../lib/ids';
 
 export const DOMAIN_STEPS = [
   { id: 'routing', label: 'Turn on Email Routing' },
-  { id: 'catchall', label: 'Route all mail for the domain to OpenInbox' },
+  { id: 'catchall', label: 'Route all mail for the domain to MurphyInbox' },
   { id: 'dmarc', label: 'Add a DMARC record' },
   { id: 'verify', label: 'Check that mail can arrive' },
 ] as const;
@@ -73,7 +73,7 @@ export async function requireCf(env: Env, settings: AppSettings): Promise<Cloudf
 
 export function requireWorker(settings: AppSettings): { accountId: string; workerName: string } {
   if (!settings.cfAccountId || !settings.cfWorkerName) {
-    throw new HttpError(409, 'worker_unknown', 'OpenInbox has not identified its Worker yet. Open the setup page from the workers.dev address.');
+    throw new HttpError(409, 'worker_unknown', 'MurphyInbox has not identified its Worker yet. Open the setup page from the workers.dev address.');
   }
   return { accountId: settings.cfAccountId, workerName: settings.cfWorkerName };
 }
@@ -84,11 +84,11 @@ export interface MxInspection {
   mx: { host: string; priority?: number }[];
   mxState: 'none' | 'cloudflare' | 'other';
   routing: { enabled: boolean; status: string } | null;
-  catchAll: 'openinbox' | 'other' | 'none';
+  catchAll: 'murphyinbox' | 'other' | 'none';
   conflicts: { address: string; action: string }[];
 }
 
-// What a zone looks like before OpenInbox takes over its mail.
+// What a zone looks like before MurphyInbox takes over its mail.
 export async function inspectZone(cf: Cloudflare, zoneId: string, workerName: string | null): Promise<MxInspection> {
   const zone = await cf.get<{ id: string; name: string }>(`/zones/${zoneId}`);
   const records = await cf.paginate<CfDnsRecord>(`/zones/${zoneId}/dns_records?type=MX`, 100, 3);
@@ -103,7 +103,7 @@ export async function inspectZone(cf: Cloudflare, zoneId: string, workerName: st
     const r = await getRouting(cf, zoneId);
     routing = { enabled: r.enabled, status: r.status };
     const rule = await getCatchAll(cf, zoneId);
-    catchAll = workerName && catchAllTargetsWorker(rule, workerName) ? 'openinbox' : rule?.enabled ? 'other' : 'none';
+    catchAll = workerName && catchAllTargetsWorker(rule, workerName) ? 'murphyinbox' : rule?.enabled ? 'other' : 'none';
     if (workerName) conflicts = conflictingRules(await listRules(cf, zoneId), workerName).map(({ address, action }) => ({ address, action }));
   } catch {
     // Email Routing was never set up on this zone.
@@ -177,7 +177,7 @@ async function stepRouting(cf: Cloudflare, d: DomainRow, state: SetupState): Pro
 
 async function stepCatchAll(cf: Cloudflare, d: DomainRow, workerName: string): Promise<string> {
   const rule = await getCatchAll(cf, d.zone_id);
-  if (catchAllTargetsWorker(rule, workerName)) return 'Already routed to OpenInbox.';
+  if (catchAllTargetsWorker(rule, workerName)) return 'Already routed to MurphyInbox.';
   await setCatchAllToWorker(cf, d.zone_id, workerName);
   return `All mail for ${d.name} now goes to the ${workerName} Worker.`;
 }
@@ -199,10 +199,10 @@ async function stepVerify(cf: Cloudflare, d: DomainRow, workerName: string): Pro
     throw new Error(`Email Routing status is "${routing.status}". ${problems.join('. ')}`.trim());
   }
   const rule = await getCatchAll(cf, d.zone_id);
-  if (!catchAllTargetsWorker(rule, workerName)) throw new Error('The catch-all rule does not point at OpenInbox.');
+  if (!catchAllTargetsWorker(rule, workerName)) throw new Error('The catch-all rule does not point at MurphyInbox.');
   const conflicts = conflictingRules(await listRules(cf, d.zone_id), workerName);
   return conflicts.length
-    ? `Ready. Note: ${conflicts.map((c) => c.address).join(', ')} have their own routing rules and bypass OpenInbox.`
+    ? `Ready. Note: ${conflicts.map((c) => c.address).join(', ')} have their own routing rules and bypass MurphyInbox.`
     : 'Ready to receive mail.';
 }
 
@@ -292,7 +292,7 @@ export async function checkDomainHealth(env: Env, settings: AppSettings, domainI
       key: 'catchall',
       label: 'Catch-all rule',
       status: toUs ? 'ok' : 'error',
-      detail: toUs ? `Routes to the ${workerName} Worker.` : 'Does not route to OpenInbox.',
+      detail: toUs ? `Routes to the ${workerName} Worker.` : 'Does not route to MurphyInbox.',
     });
   } catch (e) {
     items.push({ key: 'routing', label: 'Email Routing', status: 'error', detail: e instanceof Error ? e.message : String(e) });

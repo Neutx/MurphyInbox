@@ -63,7 +63,7 @@ export async function verifyTotp(secret: string, code: string, time = Date.now()
   return false;
 }
 
-export function otpauthUri(secret: string, account: string, issuer = 'OpenInbox'): string {
+export function otpauthUri(secret: string, account: string, issuer = 'MurphyInbox'): string {
   const label = encodeURIComponent(`${issuer}:${account}`);
   return `otpauth://totp/${label}?secret=${secret}&issuer=${encodeURIComponent(issuer)}&algorithm=SHA1&digits=6&period=30`;
 }

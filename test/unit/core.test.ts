@@ -225,11 +225,11 @@ describe('search, filters, auto-reply, versions', () => {
 describe('dashboard figures', () => {
   const row = (scriptName: string, requests: number) => ({ sum: { requests }, dimensions: { scriptName } });
   it('counts this Worker, and reports unknown while analytics has not named it yet', () => {
-    expect(workerShare([row('openinbox', 7), row('other', 3)], 'openinbox')).toBe(7);
-    expect(workerShare([row('other', 3)], 'openinbox')).toBe(0);
-    expect(workerShare([row('__unknown__', 45)], 'openinbox')).toBeUndefined();
-    expect(workerShare([row('openinbox', 2), row('__unknown__', 1)], 'openinbox')).toBe(2);
-    expect(workerShare([row('openinbox', 2)], null)).toBeUndefined();
+    expect(workerShare([row('murphyinbox', 7), row('other', 3)], 'murphyinbox')).toBe(7);
+    expect(workerShare([row('other', 3)], 'murphyinbox')).toBe(0);
+    expect(workerShare([row('__unknown__', 45)], 'murphyinbox')).toBeUndefined();
+    expect(workerShare([row('murphyinbox', 2), row('__unknown__', 1)], 'murphyinbox')).toBe(2);
+    expect(workerShare([row('murphyinbox', 2)], null)).toBeUndefined();
   });
   it('prints compact figures with K and M in every locale', () => {
     expect(num(4_999_883)).toBe('5M');

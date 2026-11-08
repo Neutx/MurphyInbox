@@ -1,6 +1,6 @@
-// "Update available" notice: compares this build's version with the latest upstream release.
+// "Update available" notice: compares this build's version with the latest MurphyInbox release.
 import type { Env } from '../env';
-import { UPSTREAM_REPO } from '../../shared/constants';
+import { APP_REPO } from '../../shared/constants';
 import { cached } from './usage';
 
 export interface UpdateInfo {
@@ -31,8 +31,8 @@ export async function checkForUpdate(env: Env, fresh = false): Promise<UpdateInf
     12 * 3_600_000,
     async () => {
       try {
-        const res = await fetch(`${env.GITHUB_API_BASE || 'https://api.github.com'}/repos/${UPSTREAM_REPO}/releases/latest`, {
-          headers: { 'User-Agent': 'OpenInbox', Accept: 'application/vnd.github+json' },
+        const res = await fetch(`${env.GITHUB_API_BASE || 'https://api.github.com'}/repos/${APP_REPO}/releases/latest`, {
+          headers: { 'User-Agent': 'MurphyInbox', Accept: 'application/vnd.github+json' },
         });
         if (!res.ok) return { current, latest: null, available: false, url: null, notes: null, publishedAt: null, checkedAt: Date.now() };
         const r = (await res.json()) as { tag_name: string; html_url: string; body?: string; published_at?: string };

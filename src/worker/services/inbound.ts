@@ -479,7 +479,7 @@ async function storeUnparsed(c: Context, o: IngestOptions, size: number, rawKey:
   const threadId = newId();
   const messageId = newId();
   const subject = '(Message could not be read yet)';
-  const snippet = rawStore ? 'OpenInbox will retry reading this message automatically.' : 'This message could not be read and was too large to keep.';
+  const snippet = rawStore ? 'MurphyInbox will retry reading this message automatically.' : 'This message could not be read and was too large to keep.';
   await db.batch([
     db
       .prepare(

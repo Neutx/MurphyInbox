@@ -79,7 +79,7 @@ export function parseAddressList(input: string | null | undefined): Address[] {
 }
 
 // Lowercases the domain; the local part is kept (it is technically case sensitive, but every
-// address OpenInbox owns is stored lowercase and matched case-insensitively).
+// address MurphyInbox owns is stored lowercase and matched case-insensitively).
 export function normalizeAddress(address: string): string {
   const at = address.lastIndexOf('@');
   if (at < 0) return address.trim().toLowerCase();

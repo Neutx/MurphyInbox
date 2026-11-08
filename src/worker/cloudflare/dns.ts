@@ -172,7 +172,7 @@ export async function applyActions(cf: Cloudflare, zoneId: string, actions: DnsA
           name: a.name,
           content: a.type === 'TXT' ? quoteTxt(a.content) : a.content,
           ttl: 1,
-          comment: 'Managed by OpenInbox',
+          comment: 'Managed by MurphyInbox',
         };
         if (a.type === 'CNAME') body.proxied = false;
         if (a.type === 'MX') body.priority = a.priority ?? 10;

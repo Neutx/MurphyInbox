@@ -1,7 +1,7 @@
 {
   "name": "murphyinbox-desktop",
   "productName": "MurphyInbox",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "MurphyInbox for Windows and macOS: the web app at mail.murphylabs.org in its own window, with notifications and a tray icon.",
   "author": "Murphy Labs",
