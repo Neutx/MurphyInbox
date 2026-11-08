@@ -50,7 +50,7 @@ export default function SettingsPage() {
         </nav>
       </aside>
       <div className="scroll-thin min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-3xl px-4 pt-6 pb-12 sm:px-8 lg:pt-8">
+        <div className="w-full px-4 pt-6 pb-12 sm:px-6 lg:px-8 lg:pt-8">
           <Routes>
             {ACCOUNT.map((a) => (
               <Route key={a.to} path={a.to} element={a.element} />
